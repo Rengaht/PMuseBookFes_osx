@@ -19,39 +19,8 @@ void ofApp::setup(){
 ////    if(ofIsGLProgrammableRenderer()){
 ////        _shader_glitch.load("shader/shadersGL3/shader");
 ////    }else{
-        //_shader_glitch.load("shader/shadersGL2/shader");
     _shader_glitch.load("shader/shaderBlurX");
-////    }
-//
-//    _shader_plane.set(ofGetWidth(),ofGetHeight());
-//    _shader_plane.mapTexCoords(0,0,ofGetWidth(),ofGetHeight());
 
-    // ofDisableArbTex();
-    _shader_mesh.addVertex(ofVec2f(0,0));
-    _shader_mesh.addVertex(ofVec2f(ofGetWidth(),0));
-    _shader_mesh.addVertex(ofVec2f(ofGetWidth(),ofGetHeight()));
-
-    _shader_mesh.addVertex(ofVec2f(ofGetWidth(),ofGetHeight()));
-    _shader_mesh.addVertex(ofVec2f(0,ofGetHeight()));
-    _shader_mesh.addVertex(ofVec2f(0,0));
-
-//    _shader_mesh.addTexCoord(ofVec2f(0,0));
-//    _shader_mesh.addTexCoord(ofVec2f(ofGetWidth(),0));
-//    _shader_mesh.addTexCoord(ofVec2f(ofGetWidth(),ofGetHeight()));
-//
-//    _shader_mesh.addTexCoord(ofVec2f(ofGetWidth(),ofGetHeight()));
-//    _shader_mesh.addTexCoord(ofVec2f(0,ofGetHeight()));
-//    _shader_mesh.addTexCoord(ofVec2f(0,0));
-    _shader_mesh.addTexCoord(ofVec2f(0,0));
-    _shader_mesh.addTexCoord(ofVec2f(1,0));
-    _shader_mesh.addTexCoord(ofVec2f(1,1));
-    
-    _shader_mesh.addTexCoord(ofVec2f(1,1));
-    _shader_mesh.addTexCoord(ofVec2f(0,1));
-    _shader_mesh.addTexCoord(ofVec2f(0,0));
-    
-   // ofEnableArbTex();
-    //resetGlitch();
     
 	setupCamera();
     
@@ -139,7 +108,6 @@ void ofApp::draw(){
 	//_camera.draw(0,0);
     drawShaderImage();
     //drawFaceFrame();
-    //drawGlitch();
     
     ofPopMatrix();
 
@@ -449,24 +417,3 @@ void ofApp::drawShaderImage(){
 //}
 
 
-void ofApp::resetGlitch(){
-    
-    _vbo_glitch.clear();
-    
-    ofPlanePrimitive _plane;
-    _plane.set(ofGetWidth(),ofGetHeight());
-    _plane.mapTexCoords(0,0,ofGetWidth(),ofGetHeight());
-    
-    _vbo_glitch.setMesh(_plane.getMesh(),GL_STATIC_DRAW);
-}
-
-void ofApp::updateGlitch(){
-    
-    
-}
-void ofApp::drawGlitch(){
-    _camera.getTextureReference().bind();
-    _vbo_glitch.draw(GL_QUADS,0,_vbo_glitch.getNumVertices());
-    _camera.getTextureReference().unbind();
-    
-}

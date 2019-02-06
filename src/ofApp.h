@@ -77,13 +77,7 @@ class ofApp : public ofBaseApp{
         ofImage *_img_number;
     
         ofShader _shader_glitch;
-        ofPlanePrimitive _shader_plane;
-        ofMesh _shader_mesh;
         void drawShaderImage();
-        ofVbo _vbo_glitch;
-        void resetGlitch();
-        void updateGlitch();
-    void drawGlitch();
     
     
         //ofxTrueTypeFontUC _font_poem;
