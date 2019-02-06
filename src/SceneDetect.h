@@ -38,7 +38,7 @@ public:
                 ofFill();
 				    ofDrawBitmapString("1.Show your face...",10,10);				
                     ofDrawBitmapString(ofToString(floor(TIME_DETECT*(1-_timer_detect.val())/1000)),10,20);*/
-				ofSetColor(255,255*_timer_blink.val());
+				ofSetColor(255,255*(1.0-_timer_blink.valEaseInOut()));
 				if(_index_blink==0) _img_text[0].draw(0,0);
                 else{
                     _img_text[1].draw(0,0);

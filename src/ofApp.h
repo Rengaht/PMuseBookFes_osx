@@ -19,7 +19,7 @@
 #define TIME_POEM 5000
 #define TIME_FINISH 5000
 
-#define TIME_HINT 1000
+#define TIME_HINT 3000
 
 
 using namespace ofxCv;
@@ -55,7 +55,9 @@ class ofApp : public ofBaseApp{
 		ofxCv::ObjectFinder _finder;
 	
 		void setupCamera();
-        
+        void setCameraPause(bool set_);
+        bool _camera_paused;
+    
         void sendFaceRequest();
         void sendPoemRequest(float mood_);
         
@@ -73,6 +75,16 @@ class ofApp : public ofBaseApp{
     
         ofImage _img_frame;
         ofImage *_img_number;
+    
+        ofShader _shader_glitch;
+        ofPlanePrimitive _shader_plane;
+        ofMesh _shader_mesh;
+        void drawShaderImage();
+        ofVbo _vbo_glitch;
+        void resetGlitch();
+        void updateGlitch();
+    void drawGlitch();
+    
     
         //ofxTrueTypeFontUC _font_poem;
     private:        

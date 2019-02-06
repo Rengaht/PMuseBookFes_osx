@@ -9,6 +9,7 @@
 #define PPoem_h
 #define LINE_MARGIN 10
 #define MAX_POEM_LENGTH 800
+#define POEM_TRANS_TIME 500
 
 #include "ofxTrueTypeFontUC.h"
 
@@ -34,7 +35,7 @@ public:
         }
         _timer_in=FrameTimer(1000);
         _timer_out=FrameTimer(500);
-        _timer_go=FrameTimer(1000);
+        _timer_go=FrameTimer(POEM_TRANS_TIME);
         _timer_flow=FrameTimer(ofRandom(500,1000),ofRandom(500));
     }
     void draw(){
@@ -53,7 +54,7 @@ public:
             else src[i]=_pos_src[i];
         }
         
-        float dl=_timer_flow.valEaseInOut();
+        float dl=1;//_timer_flow.valEaseInOut();
         float dt=1.0/(float)_mline;
         
         for(float i=0;i<1;i+=dt){
@@ -152,7 +153,7 @@ public:
         
         _timer_in=FrameTimer(1000);
         _timer_out=FrameTimer(500);
-        _timer_go=FrameTimer(1000);
+        _timer_go=FrameTimer(POEM_TRANS_TIME);
         
         // parse string
         if(mline){

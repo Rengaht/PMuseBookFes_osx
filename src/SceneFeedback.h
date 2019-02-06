@@ -35,7 +35,7 @@ public:
 			case 1:
                 ofPushStyle();
                 
-                ofSetColor(255,255*_timer_blink.val());
+                ofSetColor(255,255*(1.0-_timer_blink.valEaseInOut()));
                 _ptr_app->drawNumber(TIME_DETECT_COUNT-1-_index_blink);
                 
                

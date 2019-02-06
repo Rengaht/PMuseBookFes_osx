@@ -16,7 +16,43 @@ void ofApp::setup(){
 	
 	ofSetVerticalSync(true);
     
-	
+////    if(ofIsGLProgrammableRenderer()){
+////        _shader_glitch.load("shader/shadersGL3/shader");
+////    }else{
+        //_shader_glitch.load("shader/shadersGL2/shader");
+    _shader_glitch.load("shader/shaderBlurX");
+////    }
+//
+//    _shader_plane.set(ofGetWidth(),ofGetHeight());
+//    _shader_plane.mapTexCoords(0,0,ofGetWidth(),ofGetHeight());
+
+    // ofDisableArbTex();
+    _shader_mesh.addVertex(ofVec2f(0,0));
+    _shader_mesh.addVertex(ofVec2f(ofGetWidth(),0));
+    _shader_mesh.addVertex(ofVec2f(ofGetWidth(),ofGetHeight()));
+
+    _shader_mesh.addVertex(ofVec2f(ofGetWidth(),ofGetHeight()));
+    _shader_mesh.addVertex(ofVec2f(0,ofGetHeight()));
+    _shader_mesh.addVertex(ofVec2f(0,0));
+
+//    _shader_mesh.addTexCoord(ofVec2f(0,0));
+//    _shader_mesh.addTexCoord(ofVec2f(ofGetWidth(),0));
+//    _shader_mesh.addTexCoord(ofVec2f(ofGetWidth(),ofGetHeight()));
+//
+//    _shader_mesh.addTexCoord(ofVec2f(ofGetWidth(),ofGetHeight()));
+//    _shader_mesh.addTexCoord(ofVec2f(0,ofGetHeight()));
+//    _shader_mesh.addTexCoord(ofVec2f(0,0));
+    _shader_mesh.addTexCoord(ofVec2f(0,0));
+    _shader_mesh.addTexCoord(ofVec2f(1,0));
+    _shader_mesh.addTexCoord(ofVec2f(1,1));
+    
+    _shader_mesh.addTexCoord(ofVec2f(1,1));
+    _shader_mesh.addTexCoord(ofVec2f(0,1));
+    _shader_mesh.addTexCoord(ofVec2f(0,0));
+    
+   // ofEnableArbTex();
+    //resetGlitch();
+    
 	setupCamera();
     
     loadScene();
@@ -47,6 +83,11 @@ void ofApp::setupCamera(){
     
     float scale_=max((float)ofGetWidth()/_camera.getWidth(),(float)ofGetHeight()/_camera.getHeight());
     _camera_scale=ofPoint(scale_,scale_);
+    
+    _camera_paused=false;
+}
+void ofApp::setCameraPause(bool set_){
+    _camera_paused=set_;
 }
 
 //--------------------------------------------------------------
@@ -60,7 +101,7 @@ void ofApp::update(){
     _emotion_tag.update(dt_);
     _poem.update(dt_);
 
-	if(_status!=PPOEM && _status!=PFINISH){
+	if(!_camera_paused){
 		_camera.update();
 		//_camera.getPixelsRef().mirror(false,true);
 		if(_camera.isFrameNew()){
@@ -95,9 +136,10 @@ void ofApp::draw(){
     ofTranslate(w,0);
     ofScale(-_camera_scale.x,_camera_scale.y);
 
-	_camera.draw(0,0);
+	//_camera.draw(0,0);
+    drawShaderImage();
     //drawFaceFrame();
-    
+    //drawGlitch();
     
     ofPopMatrix();
 
@@ -159,6 +201,7 @@ void ofApp::setStatus(PStatus set_){
 			_json_face.clear();
             _emotion_tag.reset();
             _poem.clear();
+            setCameraPause(false);
             break;
         case PPOEM:
             _emotion_tag.init();
@@ -166,6 +209,7 @@ void ofApp::setStatus(PStatus set_){
         case PFEEDBACK:
             _emotion_tag.end();
             _poem.goOut();
+            setCameraPause(false);
             break;
         case PFINISH:
             _emotion_tag.init();
@@ -204,6 +248,8 @@ void ofApp::onSceneInFinish(int &e){
     
 }
 void ofApp::onSceneOutFinish(int &e){
+    
+    
 	ofLog()<<"scene "<<e<<" out finish!";
     setStatus(_status);
 }
@@ -211,6 +257,9 @@ void ofApp::onSceneOutFinish(int &e){
 void ofApp::sendFaceRequest(){
 
     ofLog()<<"Send Face Requeset...";
+    
+    setCameraPause(true);
+    
     
     string url_="https://eastasia.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceAttributes=age,gender,emotion,smile&returnFaceLandmarks=true";	
 	// save image
@@ -363,6 +412,19 @@ void ofApp::drawPoem(){
     
 }
 
+void ofApp::drawShaderImage(){
+
+    _shader_glitch.begin();
+    //_shader_glitch.setUniform1f("blurAmnt", sin(floor((float)ofGetFrameNum()/30.0+ofRandom(PI))));
+    _shader_glitch.setUniform1f("blurAmnt", ofMap(mouseX,0,ofGetWidth(),0,1));
+    
+    _camera.draw(0,0);
+
+    _shader_glitch.end();
+
+
+}
+
 
 //string ofApp::ws2utf8(std::wstring &input){
 //
@@ -385,3 +447,26 @@ void ofApp::drawPoem(){
 //    }
 //    return wstring();
 //}
+
+
+void ofApp::resetGlitch(){
+    
+    _vbo_glitch.clear();
+    
+    ofPlanePrimitive _plane;
+    _plane.set(ofGetWidth(),ofGetHeight());
+    _plane.mapTexCoords(0,0,ofGetWidth(),ofGetHeight());
+    
+    _vbo_glitch.setMesh(_plane.getMesh(),GL_STATIC_DRAW);
+}
+
+void ofApp::updateGlitch(){
+    
+    
+}
+void ofApp::drawGlitch(){
+    _camera.getTextureReference().bind();
+    _vbo_glitch.draw(GL_QUADS,0,_vbo_glitch.getNumVertices());
+    _camera.getTextureReference().unbind();
+    
+}
