@@ -46,7 +46,7 @@ public:
         _timer_finish.update(dt_);
     }
     void onTimerFinish(int &e){
-        _ptr_app->setStatus(ofApp::PSLEEP);
+        _ptr_app->prepareStatus(ofApp::PSLEEP);
     }
 };
 

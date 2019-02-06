@@ -45,7 +45,7 @@ public:
         _timer_poem.update(dt_);
     }
     void onTimerFinish(int &e){
-        _ptr_app->setStatus(ofApp::PFEEDBACK);
+        _ptr_app->prepareStatus(ofApp::PFEEDBACK);
     }
 
 };

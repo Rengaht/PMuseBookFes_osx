@@ -70,11 +70,14 @@ void ofApp::update(){
 	bool found_ = _finder.size()>0;
 	switch(_status){
 		case PSLEEP:
-			if(found_ && ((SceneSleep*)_scene[_status])->hintFinished()) setStatus(PStatus::PDETECT);
+			if(found_ && ((SceneSleep*)_scene[_status])->hintFinished()) prepareStatus(PStatus::PDETECT);
 			break;
         case PPOEM:
             if(_emotion_tag.fadeInFinished()){
-                if(_poem._state!=PPoem::IN)_poem.init();
+                if(_poem._state!=PPoem::IN){
+                    _poem.reset();
+                    _poem.init();
+                }
             }
             break;
 	}
@@ -121,7 +124,7 @@ void ofApp::keyReleased(int key){
 			sendFaceRequest();
 			break;
 		case 'q':
-			setStatus(PSLEEP);
+			prepareStatus(PSLEEP);
 			break;
 	}
 }
@@ -137,22 +140,26 @@ void ofApp::mouseReleased(int x, int y, int button){
 	bool trigger_=_scene[_status]->handleMouse(x,y);
 }
 
-void ofApp::setStatus(PStatus set_){
+void ofApp::prepareStatus(PStatus set_){
 	
 	_status_pre=_status;
 	_status=set_;
 	
 	if(_status_pre!=PEMPTY) _scene[_status_pre]->end();
-	_scene[_status]->init();
-	_in_transition=true;
-
+    _in_transition=true;
+}
+void ofApp::setStatus(PStatus set_){
+	
+    
+    _scene[set_]->init();
+	
 	switch(set_){
 		case PSLEEP:
 			_rect_face.clear();
 			_json_face.clear();
             _emotion_tag.reset();
-            _poem.reset();
-			break;
+            _poem.clear();
+            break;
         case PPOEM:
             _emotion_tag.init();
             break;
@@ -165,7 +172,7 @@ void ofApp::setStatus(PStatus set_){
             _poem.goIn();
             break;
 	}
-
+    
 }
 
 
@@ -185,20 +192,20 @@ void ofApp::loadScene(){
         //_img_number[i].loadImage("img/"+ofToString(i+1)+".png");
     }
     
-    PEmotionTag::FontEmotionNumber.loadFont("font/HelveticaNeue-Medium.ttf",32);
-    PEmotionTag::FontEmotionTitle.loadFont("font/Helvetica-Neue-Light-Italic_22502.ttf",32);
+    PEmotionTag::FontEmotionNumber.loadFont("font/HelveticaNeue-Medium.ttf",28);
+    PEmotionTag::FontEmotionTitle.loadFont("font/Helvetica-Neue-Light-Italic_22502.ttf",28);
     
-    PPoemText::FontPoem.loadFont("font/Pro_GB18030-DemiBold.ttf",56);
+    PPoemText::FontPoem.loadFont("font/Pro_GB18030-DemiBold.ttf",48);
 }
 
 void ofApp::onSceneInFinish(int &e){
 	ofLog()<<"scene "<<e<<" in finish!";	
 	_in_transition=false;
-
+    
 }
 void ofApp::onSceneOutFinish(int &e){
 	ofLog()<<"scene "<<e<<" out finish!";
-
+    setStatus(_status);
 }
 
 void ofApp::sendFaceRequest(){
@@ -243,14 +250,14 @@ void ofApp::urlResponse(ofxHttpResponse & resp_){
         
         //parsePoem(resp_.responseBody);
     
-        if(_poem.parse(resp_.responseBody)) setStatus(PPOEM);
-        else setStatus(PSLEEP);
+        if(_poem.parse(resp_.responseBody)) prepareStatus(PPOEM);
+        else prepareStatus(PSLEEP);
         
     }else if(resp_.url.find("microsoft.com")!=-1){
 		
         parseFaceData(resp_.responseBody);
 		if(_status==PDETECT) sendPoemRequest(0.5);
-        else if(_status==PFEEDBACK) setStatus(PFINISH);
+        else if(_status==PFEEDBACK) prepareStatus(PFINISH);
 	}
     
 	

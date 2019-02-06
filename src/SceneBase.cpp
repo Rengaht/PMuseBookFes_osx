@@ -107,7 +107,7 @@ void SceneBase::update(float dt_){
 		_timer_sleep.update(dt_);
 		if(_order_scene!=0 && _timer_sleep.finish()){
 			ofLog()<<"Back to sleep...";
-			_ptr_app->setStatus(ofApp::PStatus::PSLEEP);
+			_ptr_app->prepareStatus(ofApp::PStatus::PSLEEP);
 		}
 		break;
 	case End:

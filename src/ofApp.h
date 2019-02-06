@@ -40,7 +40,7 @@ class ofApp : public ofBaseApp{
 		
 		enum PStatus {PSLEEP,PDETECT,PPOEM,PFEEDBACK,PFINISH,PEMPTY};
 		PStatus _status,_status_pre;
-		void setStatus(PStatus set_);
+		void prepareStatus(PStatus set_);
 
 		SceneBase* _scene[5];
 
@@ -85,6 +85,9 @@ class ofApp : public ofBaseApp{
     
         PEmotionTagGroup _emotion_tag;
         PPoem _poem;
+    
+        void setStatus(PStatus set_);
+    
     
         //string ws2utf8(wstring& s);
         //wstring utf82ws(string& s);
