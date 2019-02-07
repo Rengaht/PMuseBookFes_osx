@@ -8,6 +8,7 @@
 #ifndef PPoem_h
 #define PPoem_h
 #define LINE_MARGIN 10
+#define LINE_WIDTH 5
 #define MAX_POEM_LENGTH 800
 #define POEM_TRANS_TIME 500
 
@@ -43,7 +44,7 @@ public:
         ofPushStyle();
         ofSetColor(0,alpha_);
         //ofNoFill();
-        ofSetLineWidth(3);
+        ofSetLineWidth(LINE_WIDTH);
         
         ofPoint src[4];
         for(int i=0;i<4;++i){
@@ -91,6 +92,12 @@ public:
     void goIn(){
         _timer_go.restart();
         _state=IN;
+    }
+    bool goFinished(){
+        return _timer_go.finish();
+    }
+    bool initFinished(){
+        return _timer_in.finish();
     }
     ofPoint lerpPoint(ofPoint pt1_,ofPoint pt2_,float p){
         return ofVec2f(ofLerp(pt1_.x,pt2_.x,p),ofLerp(pt1_.y,pt2_.y,p));
@@ -252,6 +259,12 @@ public:
         _timer_go.restart();
         _state=IN;
     }
+    bool goFinished(){
+        return _timer_go.finish();
+    }
+    bool initFinished(){
+        return _timer_in.finish();
+    }
     ofRectangle getRect(){
         return _bound;
     }
@@ -291,9 +304,9 @@ public:
                 h+=bound.height;
                 y+=bound.height;
             }
-            for(auto& r:_rect){
-                r.setWidth(w);
-            }
+//            for(auto& r:_rect){
+//                r.setWidth(w);
+//            }
             _bound=ofRectangle(0,0,w,h);
         }
         return _bound;
@@ -360,6 +373,24 @@ public:
         for(auto&p:_line) p.goIn();
         _state=PoemState::IN;
     }
+    bool goFinished(){
+        for(auto&p: _poem){
+            if(!p.goFinished()) return false;
+        }
+        for(auto&p: _line){
+            if(!p.goFinished()) return false;
+        }
+        return true;
+    }
+    bool initFinished(){
+        for(auto&p: _poem){
+            if(!p.initFinished()) return false;
+        }
+        for(auto&p: _line){
+            if(!p.initFinished()) return false;
+        }
+        return true;
+    }
     
     void resetPos(){
        
@@ -397,7 +428,7 @@ public:
         }
         
         
-        int src_y=230;
+        int src_y=150;
         int left_x=ofGetWidth()/2-cent_wid/2;
         float right_x=ofGetWidth()/2+cent_wid/2;
         

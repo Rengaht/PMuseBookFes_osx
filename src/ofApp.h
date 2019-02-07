@@ -77,7 +77,8 @@ class ofApp : public ofBaseApp{
         ofImage *_img_number;
     
         ofShader _shader_glitch;
-        void drawShaderImage();
+        ofShader _shader_blur;
+        ofFbo _fbo_glitch;
     
     
         //ofxTrueTypeFontUC _font_poem;
@@ -93,6 +94,13 @@ class ofApp : public ofBaseApp{
         PPoem _poem;
     
         void setStatus(PStatus set_);
+    
+        void drawShaderImage();
+        FrameTimer _timer_shader_in,_timer_shader_out;
+        float _shader_density;
+    
+        //enum RequestState {WAIT,SENT,GOTFACE,GOTPOEM};
+        //RequestState _request_state;
     
     
         //string ws2utf8(wstring& s);

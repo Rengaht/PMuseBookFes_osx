@@ -19,8 +19,13 @@ void ofApp::setup(){
 ////    if(ofIsGLProgrammableRenderer()){
 ////        _shader_glitch.load("shader/shadersGL3/shader");
 ////    }else{
-    _shader_glitch.load("shader/shaderBlurX");
-
+    _shader_glitch.load("shader/glitch");
+    _timer_shader_in=FrameTimer(300);
+    _timer_shader_out=FrameTimer(300);
+    
+    _shader_blur.load("shader/shaderBlurX");
+    _fbo_glitch.allocate(ofGetWidth(),ofGetHeight());
+    
     
 	setupCamera();
     
@@ -57,6 +62,13 @@ void ofApp::setupCamera(){
 }
 void ofApp::setCameraPause(bool set_){
     _camera_paused=set_;
+    if(set_){
+        _timer_shader_in.restart();
+        _timer_shader_out.reset();
+    }else{
+        _timer_shader_in.reset();
+        _timer_shader_out.restart();
+    }
 }
 
 //--------------------------------------------------------------
@@ -77,11 +89,31 @@ void ofApp::update(){
 			_finder.update(_camera);
 		}		
 	}
+    /* for shader */
+    _timer_shader_out.update(dt_);
+    _timer_shader_in.update(dt_);
+    float dd_=(_timer_shader_in.valEaseInOut()*(1.0-_timer_shader_out.valEaseInOut()));
+    
+    
 	bool found_ = _finder.size()>0;
 	switch(_status){
 		case PSLEEP:
 			if(found_ && ((SceneSleep*)_scene[_status])->hintFinished()) prepareStatus(PStatus::PDETECT);
 			break;
+        case PDETECT:
+            if(dd_>0 && dd_<1){
+                if(ofRandom(10)<1) _shader_density=dd_+ofRandom(-.2,.2);
+            }else if(dd_==1){
+                if(_poem.initFinished() && ofRandom(30)<1) _shader_density=dd_+ofRandom(-.1,.1);
+            }else _shader_density=dd_;
+            break;
+        case PFEEDBACK:
+            if(dd_>0 && dd_<1){
+                if(ofRandom(10)<1) _shader_density=dd_+ofRandom(-.2,.2);
+            }else if(dd_==1){
+                if(_poem.goFinished() && ofRandom(30)<1) _shader_density=dd_+ofRandom(-.1,.1);
+            }else _shader_density=dd_;
+            break;
         case PPOEM:
             if(_emotion_tag.fadeInFinished()){
                 if(_poem._state!=PPoem::IN){
@@ -169,7 +201,10 @@ void ofApp::setStatus(PStatus set_){
 			_json_face.clear();
             _emotion_tag.reset();
             _poem.clear();
+        
             setCameraPause(false);
+            _shader_density=0;
+        
             break;
         case PPOEM:
             _emotion_tag.init();
@@ -177,6 +212,7 @@ void ofApp::setStatus(PStatus set_){
         case PFEEDBACK:
             _emotion_tag.end();
             _poem.goOut();
+        
             setCameraPause(false);
             break;
         case PFINISH:
@@ -228,7 +264,6 @@ void ofApp::sendFaceRequest(){
     
     setCameraPause(true);
     
-    
     string url_="https://eastasia.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceAttributes=age,gender,emotion,smile&returnFaceLandmarks=true";	
 	// save image
 	ofSaveImage(_camera.getPixels(),"tmp.jpg");
@@ -261,18 +296,20 @@ void ofApp::urlResponse(ofxHttpResponse & resp_){
 	
 	if(resp_.status != 200){
         ofLog()<<"Requeset error: "<<resp_.reasonForStatus;
+        prepareStatus(PSLEEP);
         return;
     }
     if(resp_.url.find("muse.mmlab.com.tw")!=-1){
         
         //parsePoem(resp_.responseBody);
-    
+        
         if(_poem.parse(resp_.responseBody)) prepareStatus(PPOEM);
         else prepareStatus(PSLEEP);
         
     }else if(resp_.url.find("microsoft.com")!=-1){
 		
         parseFaceData(resp_.responseBody);
+        
 		if(_status==PDETECT) sendPoemRequest(0.5);
         else if(_status==PFEEDBACK) prepareStatus(PFINISH);
 	}
@@ -342,21 +379,6 @@ void ofApp::drawFaceFrame(){
 void ofApp::drawEmotionData(){
 
     if(_json_face.size()<1) return;
-   
-		
-//    float dy_=120;
-//
-//    int len=_json_face.size();
-//    for(int i=0;i<len;++i){
-//        ofDrawBitmapString("gender = "+ofToString(_json_face[i]["gender"].asString()),10,dy_+=20);
-//        ofDrawBitmapString("age = "+ofToString(_json_face[i]["age"].asFloat()),10,dy_+=20);
-//        ofDrawBitmapString("smile = "+ofToString(_json_face[i]["smile"].asFloat()),10,dy_+=20);
-//
-//        auto attr_=_json_face[i]["emotion"].getMemberNames();
-//        for(auto& a: attr_){
-//            ofDrawBitmapString(a+" = "+ofToString(_json_face[i]["emotion"][a].asFloat()),10,dy_+=20);
-//        }
-//    }
 
     _emotion_tag.draw();
 }
@@ -382,14 +404,24 @@ void ofApp::drawPoem(){
 
 void ofApp::drawShaderImage(){
 
+    _fbo_glitch.begin();
     _shader_glitch.begin();
-    //_shader_glitch.setUniform1f("blurAmnt", sin(floor((float)ofGetFrameNum()/30.0+ofRandom(PI))));
-    _shader_glitch.setUniform1f("blurAmnt", ofMap(mouseX,0,ofGetWidth(),0,1));
+   
+    //_shader_glitch.setUniform1f("blurAmnt", ofMap(mouseX,0,ofGetWidth(),0,1));
     
+    _shader_glitch.setUniform1f("blurAmnt", _shader_density);
     _camera.draw(0,0);
 
     _shader_glitch.end();
-
+    _fbo_glitch.end();
+    
+    _shader_blur.begin();
+    _shader_blur.setUniform1f("blurAmnt",_shader_density*2.0);
+    
+    _fbo_glitch.draw(0,0);
+    
+    _shader_blur.end();
+    
 
 }
 
