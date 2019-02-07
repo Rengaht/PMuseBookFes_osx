@@ -30,8 +30,8 @@ public:
                 ofPopStyle();
 				break;
             case 1:
+                _ptr_app->drawEmotionData();
                 _ptr_app->drawPoem();
-				_ptr_app->drawEmotionData();
                 break;
 		}	
 	}

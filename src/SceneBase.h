@@ -3,8 +3,8 @@
 #define SCENE_BASE_H
 
 #define SLEEP_TIME 30000
-#define EASE_DUE 1000
-#define EASE_OFFSET 500
+#define EASE_DUE 500
+#define EASE_OFFSET 100
 
 #include "ofMain.h"
 #include "FrameTimer.h"
@@ -53,7 +53,8 @@ public:
 	vector<FrameTimer> _timer_in;
 	vector<FrameTimer> _timer_out;
 	int _mlayer;
-
+    
+    float getLayerAlpha(int layer_);
 
 
 };

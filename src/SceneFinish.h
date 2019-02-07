@@ -24,14 +24,25 @@ public:
 	}
 
 	void drawLayer(int i){
+        
+        float a_=(_status==End)?getLayerAlpha(0):1;
+        
 		switch(i){
 			case 0:
 				//ofDrawBitmapString("4.Poem archived at page xxx!",10,10);
-                _ptr_app->drawEmotionData();
-                _ptr_app->drawPoem();
+                _ptr_app->drawEmotionData(a_);
+                _ptr_app->drawPoem(a_);
                 break;
 			case 1:
-                _img_tint.draw(0,0);
+                
+                if(_status==SceneBase::End){
+                    ofPushStyle();
+                    ofSetColor(255);
+                        _img_tint.draw(0,0);
+                    ofPopStyle();
+                }else{
+                    _img_tint.draw(0,0);
+                }
                 _img_text.draw(0,0);
                 //ofDrawBitmapString("Go to muse.com.tw",10,20);
 				break;

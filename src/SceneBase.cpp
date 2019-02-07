@@ -59,11 +59,16 @@ void SceneBase::draw(){
 
 	ofPopStyle();
 }
+float SceneBase::getLayerAlpha(int i){
+    return _timer_in[i].valEaseInOut()*(1-_timer_out[i].valEaseInOut());
+}
 void SceneBase::drawLayer(int i){
 	
 }
 void SceneBase::init(){
-
+    
+    ofLog()<<"Scene "<<_order_scene<<" init!";
+    
 	for(int i=0;i<_mlayer;++i){
 		_timer_out[i].reset();
 		_timer_in[i].restart();
@@ -77,6 +82,9 @@ void SceneBase::init(){
 }
 
 void SceneBase::end(){
+    
+    ofLog()<<"Scene "<<_order_scene<<" end!";
+    
 	for(int i=0;i<_mlayer;++i) _timer_out[i].restart();
 	_status=SceneStatus::End;
 	//for(auto& en:_enable_button) en=false;
@@ -113,7 +121,7 @@ void SceneBase::update(float dt_){
 	case End:
 		for(int i=0;i<_mlayer;++i){
 			_timer_out[i].update(dt_);
-			if(_timer_out[i].finish()) fin_=false;
+			if(!_timer_out[i].finish()) fin_=false;
 		}
 		if(fin_){
 			if(!_trigger_out){

@@ -39,7 +39,7 @@ class ofApp : public ofBaseApp{
 		void mouseReleased(int x, int y, int button);
 		
 		enum PStatus {PSLEEP,PDETECT,PPOEM,PFEEDBACK,PFINISH,PEMPTY};
-		PStatus _status,_status_pre;
+		PStatus _status,_status_pre,_status_next;
 		void prepareStatus(PStatus set_);
 
 		SceneBase* _scene[5];
@@ -51,8 +51,7 @@ class ofApp : public ofBaseApp{
 
 
 
-		ofVideoGrabber _camera;
-		ofxCv::ObjectFinder _finder;
+		bool faceFound();
 	
 		void setupCamera();
         void setCameraPause(bool set_);
@@ -65,20 +64,20 @@ class ofApp : public ofBaseApp{
 		void urlResponse(ofxHttpResponse & response);
 
 		
-		vector<ofRectangle> _rect_face;
-		vector<ofxJSONElement> _json_face;
         void drawFaceFrame();
-		void drawEmotionData();
-        void drawPoem();
+		void drawEmotionData(float a_=1.0);
+        void drawPoem(float a_=1.0);
         void drawNumber(int i);
     
     
         ofImage _img_frame;
         ofImage *_img_number;
     
-        ofShader _shader_glitch;
-        ofShader _shader_blur;
-        ofFbo _fbo_glitch;
+    
+        PEmotionTagGroup _emotion_tag;
+        PPoem _poem;
+    
+        ofEvent<int> _event_recieve_emotion;
     
     
         //ofxTrueTypeFontUC _font_poem;
@@ -87,17 +86,27 @@ class ofApp : public ofBaseApp{
         
         int _rid_face,_rid_poem;
         void parseFaceData(string data_);
-
-        ofPoint _camera_scale;
     
-        PEmotionTagGroup _emotion_tag;
-        PPoem _poem;
+        ofPoint _camera_scale;
+        ofVideoGrabber _camera;
+        ofxCv::ObjectFinder _finder;
+    
+        vector<ofRectangle> _rect_face;
+        vector<ofxJSONElement> _json_face;
+    
     
         void setStatus(PStatus set_);
     
         void drawShaderImage();
         FrameTimer _timer_shader_in,_timer_shader_out;
         float _shader_density;
+    
+        void saveImage();
+    
+        ofShader _shader_glitch;
+        ofShader _shader_blur;
+        ofFbo _fbo_glitch;
+        ofFbo _fbo_save;
     
         //enum RequestState {WAIT,SENT,GOTFACE,GOTPOEM};
         //RequestState _request_state;

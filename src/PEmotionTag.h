@@ -30,10 +30,10 @@ public:
     PEmotionTag(float x,float y,string title,int num){
         reset(x,y,title,num);
     }
-    void draw(){
+    void draw(float a_){
         
         ofPushStyle();
-        ofSetColor(0,255*_timer_in.valEaseInOut()*(1-_timer_out.valEaseInOut()));
+        ofSetColor(0,255*_timer_in.valEaseInOut()*(1-_timer_out.valEaseInOut())*a_);
         
         ofPushMatrix();
         ofTranslate(_pos);
@@ -50,7 +50,7 @@ public:
         _title=ofToUpper(title);
         _number=num;
         
-        _pos_num=FontEmotionTitle.getStringBoundingBox(title,0,0).width+64;
+        _pos_num=-1;//FontEmotionTitle.getStringBoundingBox(title,0,0).width+64;
         
         _timer_in=FrameTimer(500,ofRandom(200));
         _timer_out=FrameTimer(300);
@@ -63,6 +63,9 @@ public:
     void update(float dt_){
         _timer_in.update(dt_);
         _timer_out.update(dt_);
+        
+        if(_pos_num<0) _pos_num=FontEmotionTitle.getStringBoundingBox(_title,0,0).width+64;
+        
     }
     void init(){
         _timer_in.restart();
@@ -108,9 +111,9 @@ public:
         
     }
     
-    void draw(){
+    void draw(float a_){
         for(int i=0;i<MEMOTION_TAG;++i){
-            _tag[i].draw();
+            _tag[i].draw(a_);
         }
     }
     
@@ -123,6 +126,7 @@ public:
      for(int i=0;i<MEMOTION_TAG;++i) _tag[i].reset();
     }
     void init(){
+        ofLogVerbose()<<"emotion tag init!!";
         for(int i=0;i<MEMOTION_TAG;++i) _tag[i].init();
     }
     void end(){

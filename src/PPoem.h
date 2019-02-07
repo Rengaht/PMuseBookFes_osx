@@ -39,8 +39,8 @@ public:
         _timer_go=FrameTimer(POEM_TRANS_TIME);
         _timer_flow=FrameTimer(ofRandom(500,1000),ofRandom(500));
     }
-    void draw(){
-        float alpha_=255*_timer_in.valEaseInOut()*(1-_timer_out.valEaseInOut());
+    void draw(float a_){
+        float alpha_=255*_timer_in.valEaseInOut()*(1-_timer_out.valEaseInOut())*a_;
         ofPushStyle();
         ofSetColor(0,alpha_);
         //ofNoFill();
@@ -179,13 +179,13 @@ public:
         }
         
     }
-    void draw(){
+    void draw(float a_){
         
         if(_rect.size()!=_mline)
             return;
         
         ofPushStyle();
-        float alpha_=255*_timer_in.valEaseInOut()*(1-_timer_out.valEaseInOut());
+        float alpha_=255*_timer_in.valEaseInOut()*(1-_timer_out.valEaseInOut())*a_;
         
         ofPushMatrix();
         //ofTranslate(_pos);
@@ -325,10 +325,10 @@ public:
     PPoem(){
         _state=PoemState::EMPTY;
     }
-    void draw(){
+    void draw(float a_){
         
-        for(auto& s:_poem) s.draw();
-        for(auto& s:_line) s.draw();
+        for(auto& s:_poem) s.draw(a_);
+        for(auto& s:_line) s.draw(a_);
         
     }
     
@@ -428,7 +428,7 @@ public:
         }
         
         
-        int src_y=150;
+        int src_y=200;
         int left_x=ofGetWidth()/2-cent_wid/2;
         float right_x=ofGetWidth()/2+cent_wid/2;
         
