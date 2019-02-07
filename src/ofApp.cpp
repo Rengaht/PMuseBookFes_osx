@@ -210,7 +210,8 @@ void ofApp::setStatus(PStatus set_){
 	switch(set_){
 		case PSLEEP:
 			_rect_face.clear();
-			_json_face.clear();
+            
+			//_json_face.clear();
             _emotion_tag.reset();
             _poem.clear();
         
@@ -218,6 +219,9 @@ void ofApp::setStatus(PStatus set_){
             _shader_density=0;
             
         
+            break;
+        case PDETECT:
+            createUserID();
             break;
         case PPOEM:
             //_emotion_tag.init();
@@ -278,7 +282,10 @@ void ofApp::onSceneInFinish(int &e){
 	ofLog()<<"scene "<<e<<" in finish!";	
 	_in_transition=false;
     
-    if(_status==PFINISH) saveImage();
+    if(_status==PFINISH){
+        saveImage();
+        saveRawData();
+    }
 }
 void ofApp::onSceneOutFinish(int &e){
     
@@ -334,8 +341,11 @@ void ofApp::urlResponse(ofxHttpResponse & resp_){
         
         //parsePoem(resp_.responseBody);
         
-        if(_poem.parse(resp_.responseBody)) prepareStatus(PPOEM);
-        else prepareStatus(PSLEEP);
+        if(_poem.parse(resp_.responseBody)){
+            prepareStatus(PPOEM);
+            _user_data["poem"].append(resp_.responseBody.getText());
+            
+        }else prepareStatus(PSLEEP);
         
     }else if(resp_.url.find("microsoft.com")!=-1){
         //ofLog()<<"receive: "<<resp_.responseBody;
@@ -359,7 +369,9 @@ void ofApp::urlResponse(ofxHttpResponse & resp_){
 void ofApp::parseFaceData(string data_){
 	
 	//ofLog()<<"get face data: "<<data_;
-
+    
+    //_json_face.clear();
+    
 	ofxJSONElement json_;
 	if(json_.parse(data_)){
 		int len=json_.size();
@@ -370,11 +382,12 @@ void ofApp::parseFaceData(string data_){
 				json_[i]["faceRectangle"]["height"].asInt());
 			_rect_face.push_back(rect_);
 
-			_json_face.push_back(json_[i]["faceAttributes"]);
+			//_json_face.push_back(json_[i]["faceAttributes"]);
             
             _emotion_tag.parseTag(json_[i]["faceAttributes"]["emotion"]);
 
 		}
+        _user_data["face"]=json_;
 	}
 
 }
@@ -474,7 +487,7 @@ void ofApp::drawShaderImage(){
 
 void ofApp::saveImage(){
     
-    string filename_="output/mfp-"+ofGetTimestampString()+".jpg";
+    string filename_="output/"+_user_id+".jpg";
     
     _fbo_save.begin();
 //    ofSetBackgroundColor(0);
@@ -497,6 +510,23 @@ void ofApp::saveImage(){
     tmp_.setFromPixels(pixels.getPixels(),pixels.getWidth(),pixels.getHeight(),OF_IMAGE_COLOR);
     tmp_.save(filename_);
     
+}
+void ofApp::createUserID(){
+    _user_id="mm"+ofGetTimestampString();
+    _user_data.clear();
+}
+
+void ofApp::saveRawData(){
+    
+    ofImage tmp_;
+    tmp_.setFromPixels(_camera.getPixels().getData(),_camera.getWidth(),_camera.getHeight(),OF_IMAGE_COLOR);
+    tmp_.mirror(false, true);
+    tmp_.save("raw/"+_user_id+".jpg");
+    
+    // save poem & emotion tag
+    _user_data["id"]=_user_id;
+    _user_data.save("data/"+_user_id+".json",true);
+
 }
 
 //string ofApp::ws2utf8(std::wstring &input){

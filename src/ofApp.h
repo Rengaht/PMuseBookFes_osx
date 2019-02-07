@@ -95,7 +95,7 @@ class ofApp : public ofBaseApp{
         ofxCv::ObjectFinder _finder;
     
         vector<ofRectangle> _rect_face;
-        vector<ofxJSONElement> _json_face;
+        //vector<ofxJSONElement> _json_face;
     
     
         void setStatus(PStatus set_);
@@ -105,12 +105,16 @@ class ofApp : public ofBaseApp{
         float _shader_density;
     
         void saveImage();
+        void saveRawData();
     
         ofShader _shader_glitch;
         ofShader _shader_blur;
         ofFbo _fbo_glitch;
         ofFbo _fbo_save;
     
+        string _user_id;
+        ofxJSONElement _user_data;
+        void createUserID();
     
         //string ws2utf8(wstring& s);
         //wstring utf82ws(string& s);
