@@ -27,7 +27,7 @@ public:
     
         _timer_blink=FrameTimer(1000);
         
-        _timer_poem=FrameTimer(TIME_POEM);
+        _timer_poem=FrameTimer(TIME_RECAP);
         ofAddListener(_timer_poem.finish_event,this,&SceneFeed::onTimerPoemFinish);
         ofAddListener(_ptr_app->_event_recieve_emotion,this,&SceneFeed::onReceiveEmotion);
         
@@ -80,8 +80,12 @@ public:
         switch(_state){
             case DETECT:
                 if(_timer_blink.val()==1 && _index_blink<TIME_DETECT_COUNT){
+                    if(_index_blink<TIME_DETECT_COUNT-1) _ptr_app->_sound_count.play();
+                    
                     _timer_blink.restart();
                      _index_blink++;
+                    
+                    
                     if(_index_blink>=TIME_DETECT_COUNT && !_request_sent){
                         _ptr_app->sendFaceRequest();
                         _state=EMOTION;
@@ -97,7 +101,7 @@ public:
                 break;
             case POEM:
                 if(_ptr_app->_poem.goFinished()){
-                    
+                    _ptr_app->_sound_processing.stop();
                     _timer_poem.restart();
                     _state=READ;
                 }
@@ -106,6 +110,7 @@ public:
 	}
 	void onTimerHintFinish(int &e){
         _timer_blink.restart();
+        _ptr_app->_sound_count.play();
         _state=DETECT;
 	}
     void onTimerPoemFinish(int &e){

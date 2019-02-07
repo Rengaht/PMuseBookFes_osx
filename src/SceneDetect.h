@@ -78,9 +78,11 @@ public:
 		
 		_timer_blink.update(dt_);
 		if(_timer_blink.val()==1){
-			_timer_blink.restart();
+            
+            if(_index_blink<TIME_DETECT_COUNT) _ptr_app->_sound_count.play();
+            _timer_blink.restart();
 			_index_blink++;
-
+            
             if(_index_blink>TIME_DETECT_COUNT && !_request_sent){
                 _ptr_app->sendFaceRequest();
                 _request_sent=true;
@@ -89,6 +91,8 @@ public:
     }
     void onTimerFinish(int &e){
         _timer_blink.restart();
+        //if(_index_blink<TIME_DETECT_COUNT) _ptr_app->_sound_count.play();
+        
     }
     void onReceiveEmotion(int &e){
         if( e==_order_scene && !_request_receive){

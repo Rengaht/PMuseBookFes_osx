@@ -9,6 +9,7 @@
 ofTrueTypeFont PEmotionTag::FontEmotionTitle;
 ofTrueTypeFont PEmotionTag::FontEmotionNumber;
 ofxTrueTypeFontUC PPoemText::FontPoem;
+ofSoundPlayer PPoemText::SoundGlitch[7];
 float PPoemText::TextPadding=20;
 
 //--------------------------------------------------------------
@@ -66,6 +67,9 @@ void ofApp::setCameraPause(bool set_){
     if(set_){
         _timer_shader_in.restart();
         _timer_shader_out.reset();
+        
+        _sound_processing.play();
+        
     }else{
         _timer_shader_in.reset();
         _timer_shader_out.restart();
@@ -181,7 +185,10 @@ void ofApp::mouseMoved(int x, int y ){
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
-	bool trigger_=_scene[_status]->handleMouse(x,y);
+	//bool trigger_=_scene[_status]->handleMouse(x,y);
+    if(x<200 && y<200){
+        prepareStatus(PSLEEP);
+    }
 }
 
 void ofApp::prepareStatus(PStatus set_){
@@ -209,10 +216,12 @@ void ofApp::setStatus(PStatus set_){
         
             setCameraPause(false);
             _shader_density=0;
+            
         
             break;
         case PPOEM:
             //_emotion_tag.init();
+            _sound_processing.stop();
             break;
         case PFEEDBACK:
             _emotion_tag.end();
@@ -249,6 +258,20 @@ void ofApp::loadScene(){
     PEmotionTag::FontEmotionTitle.loadFont("font/Helvetica-Neue-Light-Italic_22502.ttf",28);
     
     PPoemText::FontPoem.loadFont("font/Pro_GB18030-DemiBold.ttf",48);
+    
+    _sound_back.load("sound/back.wav");
+    _sound_back.setLoop(true);
+    _sound_back.play();
+    
+    _sound_processing.load("sound/processing.wav");
+    _sound_processing.setLoop(true);
+    
+    _sound_finish.load("sound/finish.wav");
+    _sound_count.load("sound/count-beep.wav");
+    
+    for(int i=0;i<7;++i)
+        PPoemText::SoundGlitch[i].load("sound/glitch-"+ofToString(i+1)+".wav");
+    
 }
 
 void ofApp::onSceneInFinish(int &e){

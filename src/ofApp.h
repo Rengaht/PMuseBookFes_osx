@@ -17,7 +17,8 @@
 
 #define TIME_DETECT_COUNT 3
 #define TIME_POEM 5000
-#define TIME_FINISH 5000
+#define TIME_RECAP 2000
+#define TIME_FINISH 8000
 
 #define TIME_HINT 3000
 
@@ -80,6 +81,8 @@ class ofApp : public ofBaseApp{
         ofEvent<int> _event_recieve_emotion;
     
     
+        ofSoundPlayer _sound_back,_sound_processing;
+        ofSoundPlayer _sound_finish,_sound_count;
         //ofxTrueTypeFontUC _font_poem;
     private:        
 		int _millis_now;
@@ -108,11 +111,9 @@ class ofApp : public ofBaseApp{
         ofFbo _fbo_glitch;
         ofFbo _fbo_save;
     
-        //enum RequestState {WAIT,SENT,GOTFACE,GOTPOEM};
-        //RequestState _request_state;
-    
     
         //string ws2utf8(wstring& s);
         //wstring utf82ws(string& s);
-       
+    
+    
 };

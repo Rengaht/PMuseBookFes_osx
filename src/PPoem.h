@@ -41,7 +41,7 @@ public:
         _timer_out=FrameTimer(TIME_POEM_OUT,ofRandom(.1,.5)*TIME_POEM_OUT);
         _timer_go=FrameTimer(POEM_TRANS_TIME,ofRandom(.1,.5)*POEM_TRANS_TIME);
         
-        _timer_flow=FrameTimer(ofRandom(500,1000),ofRandom(500));
+        _timer_flow=FrameTimer(ofRandom(300,800));
     }
     void draw(float a_){
         float alpha_=255*_timer_in.valEaseInOut()*(1-_timer_out.valEaseInOut())*a_;
@@ -77,7 +77,7 @@ public:
         _timer_go.update(dt_);
         
         _timer_flow.update(dt_);
-        if(_timer_flow.val()==1) _timer_flow.restart();
+        //if(_timer_flow.val()==1) _timer_flow.restart();
     }
     void init(){
         _timer_in.restart();
@@ -92,10 +92,12 @@ public:
     void goOut(){
         _timer_go.restart();
         _state=OUT;
+        _timer_flow.restart();
     }
     void goIn(){
         _timer_go.restart();
         _state=IN;
+        _timer_flow.restart();
     }
     bool goFinished(){
         return _timer_go.finish();
@@ -133,6 +135,8 @@ class PPoemText{
     
 public:
     
+    static ofSoundPlayer SoundGlitch[7];
+    
     ofVec2f _pos_src,_pos_dest;
     float _ang_src,_ang_dest;
     
@@ -141,6 +145,10 @@ public:
     
     PPoemText(ofPoint pos_,string str_,float scale_=1,bool mline=true){
         reset(pos_,str_,scale_,mline);
+        
+        ofAddListener(_timer_in.finish_event,this,&PPoemText::onInFinish);
+        ofAddListener(_timer_go.finish_event,this,&PPoemText::onInFinish);
+        
     }
     void reset(){
         
@@ -278,6 +286,9 @@ public:
             r.width=wid;
         }
     }
+    void onInFinish(int& e){
+        SoundGlitch[(int)floor(ofRandom(7))].play();
+    }
     void resetBound(){
         
         _rect.clear();
@@ -323,6 +334,7 @@ class PPoem{
     vector<PPoemLine> _line;
 public:
     
+    
     enum PoemState {IN,OUT,END,EMPTY};
     PoemState _state;
     
@@ -357,6 +369,8 @@ public:
         
         for(auto& s:_poem) s.init();
         for(auto& s:_line) s.init();
+        
+        
         
         _state=PoemState::IN;
     }
@@ -509,6 +523,14 @@ public:
         ofRectangle b4(_poem[5]._pos_src.x,_poem[5]._pos_src.y,_poem[5].getRect().width,_poem[5].getRect().height);
         if(m>6) b4.height+=_poem[6].getRect().height;
         
+        if(abs(b3.width-b4.width)<30){
+            // move b4
+            float move_=ofRandom(30,200)*(b3.width>b4.width?1:-1);
+            _poem[5]._pos_src.x+=move_;
+            if(m>6) _poem[6]._pos_src.x+=move_;
+            b4.x+=move_;
+        }
+        
         ofPoint src2_[4],dest2_[4];
         int res2_;
         if(b3.width<b4.width){
@@ -550,6 +572,12 @@ public:
             b6.setX(b6.x+move_);
         }
     
+        if(abs(b5.getRight()-b7.getRight())<30){
+            // move b5
+            float move_=ofRandom(30,200)*(b5.getRight()>b7.getRight()?1:-1);
+            _poem[0]._pos_src.x+=move_;
+            b5.x+=move_;
+        }
         
         ofPoint src3_[4],dest3_[4];
         int res3_;
