@@ -12,6 +12,9 @@
 #define MAX_POEM_LENGTH 800
 #define POEM_TRANS_TIME 500
 
+#define TIME_POEM_IN 1000
+#define TIME_POEM_OUT 500
+
 #include "ofxTrueTypeFontUC.h"
 
 class PPoemLine{
@@ -34,9 +37,10 @@ public:
             _pos_src[i]=src_[i];
             _pos_dest[i]=dest_[i];
         }
-        _timer_in=FrameTimer(1000);
-        _timer_out=FrameTimer(500);
-        _timer_go=FrameTimer(POEM_TRANS_TIME);
+        _timer_in=FrameTimer(TIME_POEM_IN,ofRandom(.1,.5)*TIME_POEM_IN);
+        _timer_out=FrameTimer(TIME_POEM_OUT,ofRandom(.1,.5)*TIME_POEM_OUT);
+        _timer_go=FrameTimer(POEM_TRANS_TIME,ofRandom(.1,.5)*POEM_TRANS_TIME);
+        
         _timer_flow=FrameTimer(ofRandom(500,1000),ofRandom(500));
     }
     void draw(float a_){
@@ -158,9 +162,9 @@ public:
         ofLog()<<str_;
         //_rect=FontPoem.getStringBoundingBox(_str,0,0);
         
-        _timer_in=FrameTimer(1000);
-        _timer_out=FrameTimer(500);
-        _timer_go=FrameTimer(POEM_TRANS_TIME);
+        _timer_in=FrameTimer(TIME_POEM_IN,ofRandom(.1,.5)*TIME_POEM_IN);
+        _timer_out=FrameTimer(TIME_POEM_OUT,ofRandom(.1,.5)*TIME_POEM_OUT);
+        _timer_go=FrameTimer(POEM_TRANS_TIME,ofRandom(.1,.5)*POEM_TRANS_TIME);
         
         // parse string
         if(mline){
