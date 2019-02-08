@@ -15,7 +15,9 @@
 #define TIME_POEM_IN 1000
 #define TIME_POEM_OUT 500
 
-#include "ofxTrueTypeFontUC.h"
+//#include "ofxTrueTypeFontUC.h"
+#include "ofxTrueTypeFontUL2.h"
+
 
 class PPoemLine{
     
@@ -32,7 +34,7 @@ class PPoemLine{
     FrameTimer _timer_flow;
 public:
     PPoemLine(int mline_, ofPoint src_[],ofPoint dest_[]){
-        _mline=mline_;
+        _mline=ofClamp(mline_,2,20);
         for(int i=0;i<4;++i){
             _pos_src[i]=src_[i];
             _pos_dest[i]=dest_[i];
@@ -140,8 +142,9 @@ public:
     ofVec2f _pos_src,_pos_dest;
     float _ang_src,_ang_dest;
     
-    static ofxTrueTypeFontUC FontPoem;
+    //static ofxTrueTypeFontUC FontPoem;
     static float TextPadding;
+    static ofxTrueTypeFontUL2 FontPoem2;
     
     PPoemText(ofPoint pos_,string str_,float scale_=1,bool mline=true){
         reset(pos_,str_,scale_,mline);
@@ -177,13 +180,28 @@ public:
         // parse string
         if(mline){
            // auto text=ofSplitString(str_,"/");
-            int mstr=str_.size();
-            int per_line=3;//max((int)ceil((mstr/3)/3),3);
-            for(int i=0;i<str_.size();i+=per_line*3){
-                string t="";
-                for(int j=i;j<min((int)mstr,i+9);++j) t+=str_[j];
+//            int mstr=ofUTF8Length(str_);
+            int per_line=6;//max((int)ceil((mstr/3)/3),3);
+//            for(int i=0;i<str_.size();i+=per_line*3){
+//                string t="";
+//                for(int j=i;j<min((int)mstr,i+9);++j) t+=str_[j];
+//                _str.push_back(t);
+//            }
+            int count=0;
+            string t="";
+            for(auto a:ofUTF8Iterator(str_)){
+                ofAppendUTF8(t,a);
+                count++;
+                if(count>=per_line){
+                    _str.push_back(t);
+                    t="";
+                    count=0;
+                }
+            }
+            if(t.size()>0){
                 _str.push_back(t);
             }
+            
             _mline=_str.size();
         }else{
             _mline=1;
@@ -228,7 +246,8 @@ public:
                 ofTranslate(itp->x,itp->y);
                 
                 ofSetColor(255,104,62,alpha_);
-                FontPoem.drawString(*its,0,0);
+                //FontPoem.drawString(*its,0,0);
+                FontPoem2.drawString(*its,0,0);
                 
                 ofPopMatrix();
                 
@@ -295,7 +314,7 @@ public:
         _pos_text.clear();
         
         if(_mline==1){
-            auto r=FontPoem.getStringBoundingBox(*_str.begin(),0,0);
+            auto r=FontPoem2.getStringBoundingBox(*_str.begin(),0,0);
             if(r.width>MAX_POEM_LENGTH){
                 _scale*=(float)MAX_POEM_LENGTH/r.width;
                 //r.width=MAX_POEM_LENGTH;
@@ -310,7 +329,7 @@ public:
             float y=0;
             float w,h;
             for(auto& t:_str){
-                auto r=FontPoem.getStringBoundingBox(t,0,0);
+                auto r=FontPoem2.getStringBoundingBox(t,0,0);
                 auto bound=ofRectangle(0,0,r.width*_scale+TextPadding*2,r.height*_scale+TextPadding*2);
                 _rect.push_back(bound);
                 _pos_text.push_back(ofPoint(-r.x,-r.y));

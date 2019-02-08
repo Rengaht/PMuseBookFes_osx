@@ -8,23 +8,28 @@
 
 ofTrueTypeFont PEmotionTag::FontEmotionTitle;
 ofTrueTypeFont PEmotionTag::FontEmotionNumber;
-ofxTrueTypeFontUC PPoemText::FontPoem;
+//ofxTrueTypeFontUC PPoemText::FontPoem;
 ofSoundPlayer PPoemText::SoundGlitch[7];
 float PPoemText::TextPadding=20;
+
+ofxTrueTypeFontUL2 PPoemText::FontPoem2;
+
 
 //--------------------------------------------------------------
 void ofApp::setup(){
 	
 	ofSetVerticalSync(true);
     
+    
+    
 ////    if(ofIsGLProgrammableRenderer()){
 ////        _shader_glitch.load("shader/shadersGL3/shader");
 ////    }else{
-    _shader_glitch.load("shader/glitch");
+    _shader_glitch.load("shadersGL3/glitch");
     _timer_shader_in=FrameTimer(300);
     _timer_shader_out=FrameTimer(300);
     
-    _shader_blur.load("shader/shaderBlurX");
+    _shader_blur.load("shadersGL3/shaderBlurX");
     _fbo_glitch.allocate(ofGetWidth(),ofGetHeight(),GL_RGB);
     _fbo_save.allocate(ofGetWidth(),ofGetHeight(),GL_RGB);
     
@@ -261,7 +266,9 @@ void ofApp::loadScene(){
     PEmotionTag::FontEmotionNumber.loadFont("font/HelveticaNeue-Medium.ttf",28);
     PEmotionTag::FontEmotionTitle.loadFont("font/Helvetica-Neue-Light-Italic_22502.ttf",28);
     
-    PPoemText::FontPoem.loadFont("font/Pro_GB18030-DemiBold.ttf",48);
+    //PPoemText::FontPoem.loadFont("font/Pro_GB18030-DemiBold.ttf",48);
+    PPoemText::FontPoem2.loadFont("font/Pro_GB18030-DemiBold.ttf",48);
+    
     
     _sound_back.load("sound/back.wav");
     _sound_back.setLoop(true);
@@ -283,7 +290,6 @@ void ofApp::onSceneInFinish(int &e){
 	_in_transition=false;
     
     if(_status==PFINISH){
-        saveImage();
         saveRawData();
     }
 }
@@ -360,7 +366,19 @@ void ofApp::urlResponse(ofxHttpResponse & resp_){
         //else if(_status==PFEEDBACK) prepareStatus(PFINISH);
         
         
-	}
+    }else if(resp_.url.find("mmlab.com.tw")!=-1){
+        //ofLog()<<"receive: "<<resp_.responseBody;
+        ofxJSONElement json_;
+        json_.parse(resp_.responseBody);
+        if(json_["result"]=="success"){
+            _user_page=json_["page"].asInt();
+            ofLog()<<"add to page: "<<_user_page;
+            
+            prepareStatus(PFINISH);
+        }
+        
+        
+    }
     
 	
 
@@ -510,6 +528,21 @@ void ofApp::saveImage(){
     tmp_.setFromPixels(pixels.getPixels(),pixels.getWidth(),pixels.getHeight(),OF_IMAGE_COLOR);
     tmp_.save(filename_);
     
+    uploadImage();
+}
+void ofApp::uploadImage(){
+    string filename_="output/"+_user_id+".jpg";
+    
+    ofxHttpForm form_;
+    form_.action="https://mmlab.com.tw/project/MuseBookFes/upload.php";
+    form_.method=OFX_HTTP_POST;
+    form_.name="Poem Upload "+ofToString(ofGetElapsedTimeMillis());
+    form_.addFile("file",ofToDataPath(filename_));
+    form_.addFormField("guid", _user_id);
+    form_.addFormField("action","upload");
+    
+    _http_utils.addForm(form_);
+    
 }
 void ofApp::createUserID(){
     _user_id="mm"+ofGetTimestampString();
@@ -525,8 +558,15 @@ void ofApp::saveRawData(){
     
     // save poem & emotion tag
     _user_data["id"]=_user_id;
+    _user_data["page"]=_user_page;
+    
     _user_data.save("data/"+_user_id+".json",true);
 
+  
+}
+
+int ofApp::getUserPage(){
+    return _user_page;
 }
 
 //string ofApp::ws2utf8(std::wstring &input){

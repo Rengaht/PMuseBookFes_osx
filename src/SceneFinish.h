@@ -56,6 +56,22 @@ public:
 				break;
             case 2:
                 _img_logo.draw(0,0);
+                if(_ptr_app->getUserPage()>0){
+                    // TODO: draw page!
+                    
+                    ofPushStyle();
+                    ofSetColor(255,104,62,255*getLayerAlpha(2));
+                    
+                    //string str_=ofToString(_ptr_app->getUserPage(),3,'0');
+                    
+                    ofPushMatrix();
+                    ofTranslate(143,840);
+                    uint32_t t(_ptr_app->getUserPage());
+                    PPoemText::FontPoem2.drawString(ofToString(t,3,'0'),0,0);
+                    ofPopMatrix();
+                    
+                    ofPopStyle();
+                }
                 break;
 		}	
 	}

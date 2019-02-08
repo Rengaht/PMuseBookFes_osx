@@ -4,3 +4,4 @@ ofxJSON
 ofxOpenCv
 ofxSvg
 ofxTrueTypeFontUC
+ofxTrueTypeFontUL2

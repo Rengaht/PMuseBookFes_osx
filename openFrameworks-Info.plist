@@ -4,10 +4,8 @@
 <dict>
 	<key>NSHighResolutionCapable</key>
 	<true/>
-	<key>LSApplicationCategoryType</key>
-	<string></string>
 	<key>NSCameraUsageDescription</key>
-	<string>This app needs to access the camera</string>
+	<string>Need camera!</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>

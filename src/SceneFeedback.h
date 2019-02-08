@@ -114,7 +114,8 @@ public:
         _state=DETECT;
 	}
     void onTimerPoemFinish(int &e){
-        _ptr_app->prepareStatus(ofApp::PFINISH);
+       // _ptr_app->prepareStatus(ofApp::PFINISH);
+        _ptr_app->saveImage();
     }
     void onReceiveEmotion(int &e){
         if(e==_order_scene){

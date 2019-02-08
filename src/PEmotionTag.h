@@ -101,7 +101,7 @@ public:
             
            _tag[j].reset(x,y,title_,number_);
             
-            x=j<3?(ofGetWidth()/4.0+ofRandom(-100,50)):(ofGetWidth()/4.0*3.0+ofRandom(-50,100));
+            x=j<3?(ofRandom(30,150)):(ofGetWidth()/4.0*3.0+ofRandom(-50,100));
             y=min(y+ofRandom(150,250),ofGetHeight()-100.0f);
             if(j==3){
                 y=ofRandom(100,200);

@@ -47,7 +47,7 @@ void main()
 {
     vec4 color;
 	
-    vec2 grid=vec2(floor(texCoordVarying.x/(200.0+(texCoordVarying.y+blurAmnt)*200))*.5,floor(texCoordVarying.y/(10.0+sin(floor(texCoordVarying.y/50.0))*20.0))*5);
+    vec2 grid=vec2(floor(texCoordVarying.x/(200.0+(texCoordVarying.y+blurAmnt)*80))*.5,floor(texCoordVarying.y/(10.0+sin(floor(texCoordVarying.y/50.0))*20.0))*5);
     
     grid*=blurAmnt*.999;
     if(cnoise(grid)>0.5-blurAmnt*.3){

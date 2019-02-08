@@ -84,6 +84,10 @@ class ofApp : public ofBaseApp{
         ofSoundPlayer _sound_back,_sound_processing;
         ofSoundPlayer _sound_finish,_sound_count;
         //ofxTrueTypeFontUC _font_poem;
+    
+        int getUserPage();
+        void saveImage();
+    
     private:        
 		int _millis_now;
         
@@ -104,7 +108,7 @@ class ofApp : public ofBaseApp{
         FrameTimer _timer_shader_in,_timer_shader_out;
         float _shader_density;
     
-        void saveImage();
+        void uploadImage();
         void saveRawData();
     
         ofShader _shader_glitch;
@@ -116,6 +120,7 @@ class ofApp : public ofBaseApp{
         ofxJSONElement _user_data;
         void createUserID();
     
+        int _user_page;
         //string ws2utf8(wstring& s);
         //wstring utf82ws(string& s);
     
