@@ -69,8 +69,9 @@ public:
             ofPoint pt2=lerpPoint(src[2],src[3],i);
             //ofLog()<<pt1<<"-"<<pt2;
             ofDrawLine(pt1,lerpPoint(pt1,pt2,dl));
+            //ofDrawRectangle(pt1.x,pt1.y,LINE_WIDTH,ofLerp(pt1.y,pt2.y,dl)-pt1.y);
         }
-        
+    
         ofPopStyle();
     }
     void update(float dt_){
@@ -630,6 +631,7 @@ public:
     bool parse(string data_){
         
         _poem.clear();
+        
         
         if(data_.find("|")!=string::npos){
             auto text=ofSplitString(data_,"|");

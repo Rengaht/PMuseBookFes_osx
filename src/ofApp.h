@@ -59,7 +59,7 @@ class ofApp : public ofBaseApp{
         bool _camera_paused;
     
         void sendFaceRequest();
-        void sendPoemRequest(float mood_);
+        void sendPoemRequest();
         
         ofxHttpUtils _http_utils;
 		void urlResponse(ofxHttpResponse & response);
@@ -87,6 +87,8 @@ class ofApp : public ofBaseApp{
     
         int getUserPage();
         void saveImage();
+        bool isSamplePoem();
+        void setUseSample(bool set_);
     
     private:        
 		int _millis_now;
@@ -121,6 +123,7 @@ class ofApp : public ofBaseApp{
         void createUserID();
     
         int _user_page;
+        bool _use_sample;
         //string ws2utf8(wstring& s);
         //wstring utf82ws(string& s);
     

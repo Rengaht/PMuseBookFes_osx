@@ -179,6 +179,9 @@ void ofApp::keyReleased(int key){
         case 's':
             saveImage();
             break;
+        case 't':
+            sendPoemRequest();
+            break;
 	}
 }
 
@@ -326,15 +329,22 @@ void ofApp::sendFaceRequest(){
     _http_utils.addForm(form_);
 
 }
-void ofApp::sendPoemRequest(float mood_){
+void ofApp::sendPoemRequest(){
 
     ofLog()<<">>>>>> Send Poem Requeset...";
     
+    string emotion_=_emotion_tag.getData();
+    string url_="http://muse.mmlab.com.tw:5000/generate/mood";
+//    _http_utils.setTimeoutSeconds(20);
+//    _http_utils.addUrl(url_);
+    ofxHttpForm form_;
+    form_.action=url_;
+    form_.method=OFX_HTTP_POST;
+    form_.name="Poem Request "+ofToString(ofGetElapsedTimeMillis());
+    form_.contentType="application/json";
+    form_.data=emotion_;
     
-    string url_="http://muse.mmlab.com.tw:5000/generate/mood/"+ofToString(mood_);
-	_http_utils.setTimeoutSeconds(20);
-    _http_utils.addUrl(url_);
-
+    _http_utils.addForm(form_);
 }
 void ofApp::urlResponse(ofxHttpResponse & resp_){
 	
@@ -346,8 +356,11 @@ void ofApp::urlResponse(ofxHttpResponse & resp_){
     if(resp_.url.find("muse.mmlab.com.tw")!=-1){
         
         //parsePoem(resp_.responseBody);
+        ofxJSONElement json_;
+        json_.parse(resp_.responseBody);
+        setUseSample(json_["sample"].asBool());
         
-        if(_poem.parse(resp_.responseBody)){
+        if(_poem.parse(json_["text"].asString())){
             prepareStatus(PPOEM);
             _user_data["poem"].append(resp_.responseBody.getText());
             
@@ -358,7 +371,7 @@ void ofApp::urlResponse(ofxHttpResponse & resp_){
         parseFaceData(resp_.responseBody);
         
         if(_status==PDETECT){
-            sendPoemRequest(0.5);
+            sendPoemRequest();
         }
         int event=_status;
         ofNotifyEvent(_event_recieve_emotion,event);
@@ -568,7 +581,12 @@ void ofApp::saveRawData(){
 int ofApp::getUserPage(){
     return _user_page;
 }
-
+bool ofApp::isSamplePoem(){
+    return _use_sample;
+}
+void ofApp::setUseSample(bool set_){
+    _use_sample=set_;
+}
 //string ofApp::ws2utf8(std::wstring &input){
 //
 ////    try{

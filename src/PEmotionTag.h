@@ -76,7 +76,9 @@ public:
     bool finished(){
         return _timer_in.val()>=1;
     }
-    
+    float val(){
+        return _number;
+    }
 };
 
 class PEmotionTagGroup{
@@ -137,7 +139,19 @@ public:
             if(!_tag[i].finished()) return false;
         return true;
     }
-    
+    string getData(){
+        
+        ofxJSONElement json_;
+        
+        float arr_[8];
+        for(int i=0;i<MEMOTION_TAG;++i){
+            json_["tag"].append(_tag[i].val()/100.0);
+        }
+       
+        //json_["tag"].ap;
+        
+        return json_.getRawString();
+    }
 };
 
 
