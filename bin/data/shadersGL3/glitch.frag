@@ -49,12 +49,13 @@ void main()
 {
 //    vec4 color;
     
-    vec2 grid=vec2(floor(texCoordVarying.x/(200.0+(texCoordVarying.y+blurAmnt)*80))*.5,floor(texCoordVarying.y/(10.0+sin(floor(texCoordVarying.y/50.0))*20.0))*5);
+    vec2 grid=vec2(floor(texCoordVarying.x/(250.0+(blurAmnt*60.0)))*.5,floor(texCoordVarying.y/(20.0+sin(floor(texCoordVarying.y/100.0))*15.0))*10);
+//    vec2 grid=vec2(floor(texCoordVarying.x/20.0)*.1,floor(texCoordVarying.y/(30.0+sin(floor(texCoordVarying.y/50.0))*20.0))*10);
 
     grid*=blurAmnt*.999;
     if(cnoise(grid)>0.5-blurAmnt*.3){
         outputColor=texture(tex0, texCoordVarying+vec2(blurAmnt*100*cnoise(grid),0));
-        //gl_FragColor=vec4(0.0,1.0,0.0,1.0);
+//        outputColor=vec4(0.0,1.0,0.0,1.0);
     }else{
 
         vec2 grid2=vec2(floor(texCoordVarying.x/(50.0+sin(blurAmnt*5.0)*5)+cos(blurAmnt*20)*600)*.1,floor(texCoordVarying.y/5.0+sin(blurAmnt)*10)*50);

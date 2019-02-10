@@ -20,7 +20,7 @@ void ofApp::setup(){
 	
 	ofSetVerticalSync(true);
     ofHideCursor();
-    ofSetFullscreen(true);
+   // ofSetFullscreen(true);
     
 ////    if(ofIsGLProgrammableRenderer()){
 ////        _shader_glitch.load("shader/shadersGL3/shader");
@@ -46,6 +46,8 @@ void ofApp::setup(){
 	ofAddListener(SceneBase::sceneOutFinish,this,&ofApp::onSceneOutFinish);
 
 	ofAddListener(_http_utils.newResponseEvent,this,&ofApp::urlResponse);
+    _http_utils.setTimeoutSeconds(60);
+    _http_utils.setMaxRetries(1);
 	_http_utils.start();
 
 	ofEnableSmoothing();
@@ -123,6 +125,9 @@ void ofApp::update(){
     
     
 	switch(_status){
+        case PSLEEP:
+            //_shader_density=ofRandom(1);
+            break;
 	    case PDETECT:
             if(dd_>0 && dd_<1){
                 if(ofRandom(10)<1) _shader_density=dd_+ofRandom(-.2,.2);
@@ -234,6 +239,7 @@ void ofApp::setStatus(PStatus set_){
 	switch(set_){
 		case PSLEEP:
 			_rect_face.clear();
+        
             
 			//_json_face.clear();
             _emotion_tag.reset();
@@ -393,7 +399,7 @@ void ofApp::urlResponse(ofxHttpResponse & resp_){
 	
 	if(resp_.status != 200){
         ofLog()<<"Requeset error: "<<resp_.reasonForStatus;
-        prepareStatus(PSLEEP);
+        //prepareStatus(PSLEEP);
         return;
     }
     if(resp_.url.find("muse.mmlab.com.tw")!=-1){

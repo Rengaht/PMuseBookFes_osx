@@ -9,7 +9,7 @@
 #define PPoem_h
 #define LINE_MARGIN 10
 #define LINE_WIDTH 5
-#define MAX_POEM_LENGTH 800
+#define MAX_POEM_LENGTH 860
 #define POEM_TRANS_TIME 500
 
 #define TIME_POEM_IN 2000
@@ -63,20 +63,23 @@ public:
         
         float dl=1;//_timer_flow.valEaseInOut();
         float dt=1.0/(float)_mline;
-        
+        float lw=min(src[0].distance(src[1]),src[2].distance(src[3]))/(float)_mline*.33;
+
         for(float i=0;i<1;i+=dt){
             ofPoint pt1=lerpPoint(src[0],src[1],i);
             ofPoint pt2=lerpPoint(src[2],src[3],i);
             
             ofVec2f n_(pt2.y-pt1.y,-pt2.x+pt1.x);
             n_.normalize();
-            n_.scale(LINE_WIDTH);
+            n_.scale(lw/2);
             
             ofBeginShape();
-                ofVertex(pt1);
+                //ofVertex(pt1);
+                ofVertex(pt1.x-n_.x,pt1.y-n_.y);
                 ofVertex(pt1.x+n_.x,pt1.y+n_.y);
                 ofVertex(pt2.x+n_.x,pt2.y+n_.y);
-                ofVertex(pt2);
+                ofVertex(pt2.x-n_.x,pt2.y-n_.y);
+                //ofVertex(pt2);
             ofEndShape();
             //ofDrawLine(pt1,lerpPoint(pt1,pt2,dl));
             
@@ -204,8 +207,12 @@ public:
                 str_=t[1];
                 _has_publisher=true;
             }
+            int ulen_=0;
+            for(auto a:ofUTF8Iterator(str_)){
+                ulen_++;
+            }
             
-            int per_line=7;
+            int per_line=max(7,(int)ceil(ulen_/3));
             int count=0;
             string t="";
             for(auto a:ofUTF8Iterator(str_)){
@@ -339,7 +346,7 @@ public:
         if(_mline==1){
             auto r=FontPoem2.getStringBoundingBox(*_str.begin(),0,0);
             if(r.width>MAX_POEM_LENGTH){
-                _scale*=(float)MAX_POEM_LENGTH/r.width;
+                _scale=max(0.2f,(float)MAX_POEM_LENGTH/(float)r.width);
                 //r.width=MAX_POEM_LENGTH;
                 ofLog()<<"reset scale= "<<_scale;
             }
@@ -475,7 +482,7 @@ public:
 //            }
 //        float cent_wid=max_;
 
-        index_max_=ceil((_poem.size())/2)+1;
+        index_max_=min((int)ceil((_poem.size())/2)+1,(int)_poem.size());
         float cent_wid=_poem[index_max_].getRect().width;
         
         
@@ -501,6 +508,7 @@ public:
         src_y+=_poem[i].getRect().height;
         i++;
         
+        
         float dd_=(m>5)?(_poem[2].getRect().width,_poem[1].getRect().width):_poem[1].getRect().width;
         float y_=ofRandom(_poem[0].getRect().height+dd_,ofGetHeight()-100);
         _poem[i].setPos(ofPoint((i<index_max_?left_x:right_x-_poem[i].getRect().width),src_y),0,
@@ -518,7 +526,7 @@ public:
             i++;
         }
         
-       
+        if(m<3) return;
         _poem[i].setPos(ofPoint((i<index_max_?left_x:right_x-_poem[i].getRect().width),src_y),0,
                         ofPoint(0,ofGetHeight()-_poem[i].getRect().height),0);
         src_y+=_poem[i].getRect().height;
@@ -672,7 +680,7 @@ public:
         
         if(data_.find("|")!=string::npos){
             auto text=ofSplitString(data_,"|");
-            int m=text.size();
+            int m=min((int)text.size(),7);
             for(int i=0;i<m;++i){
                 if(text[i].size()<1) continue;
                 //auto ws=utf82ws(s);

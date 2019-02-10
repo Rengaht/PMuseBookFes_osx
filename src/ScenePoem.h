@@ -26,11 +26,11 @@ public:
 	void drawLayer(int i){
 		switch(i){
 			case 0:
-                ofPushStyle();
-                ofSetColor(255,0,0);
-                ofFill();
-				    ofDrawBitmapString("2.Writing poem...",10,10);	                			
-                ofPopStyle();
+//                ofPushStyle();
+//                ofSetColor(255,0,0);
+//                ofFill();
+//                    ofDrawBitmapString("2.Writing poem...",10,10);                                
+//                ofPopStyle();
 				break;
             case 1:
                 _ptr_app->drawEmotionData();
@@ -56,7 +56,7 @@ public:
         _timer_hint.update(dt_);
     }
     void onTimerFinish(int &e){
-        if(_ptr_app->isSamplePoem()) _ptr_app->prepareStatus(ofApp::PFINISH);
+        if(_ptr_app->isSamplePoem()) _ptr_app->saveImage();
         else _ptr_app->prepareStatus(ofApp::PFEEDBACK);
     }
 
