@@ -193,7 +193,7 @@ public:
         // parse string
         if(mline){
            
-            if(str_.indexOf('\\')!=std::string::npos){
+            if(str_.find('\\')!=std::string::npos){
                 auto t=ofSplitString(str_,"\\");
                 _str.push_back(t[0]);
                 str_=t[1];
@@ -561,7 +561,7 @@ public:
         _line.push_back(PPoemLine(res1_,src1_,dest1_));
         
         
-        if(m<4) return;
+        if(m<5) return;
         
         // L2: add bewteen p4, p5&p6
         ofRectangle b3(_poem[4]._pos_src.x,_poem[4]._pos_src.y,_poem[4].getRect().width,_poem[4].getRect().height);
