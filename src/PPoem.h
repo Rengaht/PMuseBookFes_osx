@@ -12,8 +12,8 @@
 #define MAX_POEM_LENGTH 800
 #define POEM_TRANS_TIME 500
 
-#define TIME_POEM_IN 1000
-#define TIME_POEM_OUT 500
+#define TIME_POEM_IN 2000
+#define TIME_POEM_OUT 800
 
 //#include "ofxTrueTypeFontUC.h"
 #include "ofxTrueTypeFontUL2.h"
@@ -173,6 +173,11 @@ public:
         _timer_in.reset();
         _timer_out.reset();
     }
+    string getString(){
+        string t="";
+        for(auto & s:_str) t+=s;
+        return t;
+    }
     void reset(ofPoint pos_,string str_,float scale,bool mline){
         
         _pos_src=pos_;
@@ -200,7 +205,7 @@ public:
                 _has_publisher=true;
             }
             
-            int per_line=6;
+            int per_line=7;
             int count=0;
             string t="";
             for(auto a:ofUTF8Iterator(str_)){
@@ -293,7 +298,7 @@ public:
     
     void setPos(ofVec2f src_,float sang_,ofVec2f dest_,float dang_){
         _pos_src=src_;
-        if(_pos_src.x<0) _pos_src.x=ofGetWidth()/2;
+        if(_pos_src.x<=10) _pos_src.x=ofGetWidth()/2;
         
         _pos_dest=dest_;
         
@@ -503,7 +508,7 @@ public:
         src_y+=_poem[i].getRect().height;
         i++;
         
-        if(m<3) return;
+        
         
         if(m>5){
             _poem[i].setPos(ofPoint((i<index_max_?left_x:right_x-_poem[i].getRect().width),src_y),0,
@@ -512,11 +517,15 @@ public:
             
             i++;
         }
+        
+       
         _poem[i].setPos(ofPoint((i<index_max_?left_x:right_x-_poem[i].getRect().width),src_y),0,
                         ofPoint(0,ofGetHeight()-_poem[i].getRect().height),0);
         src_y+=_poem[i].getRect().height;
         i++;
         
+        
+        if(m<4) return;
         
         _poem[i].setPos(ofPoint((i<index_max_?left_x:right_x-_poem[i].getRect().width),src_y),0,
                         ofPoint(ofGetWidth()-_poem[i].getRect().width,0),0);
@@ -529,9 +538,11 @@ public:
             src_y+=_poem[i].getRect().height;
             i++;
         }
+        
+        if(m<5) return;
         _poem[i].setPos(ofPoint((i<index_max_?left_x:right_x-_poem[i].getRect().width),src_y),0,
                         ofPoint(ofGetWidth(),ofGetHeight()-_poem[i].getRect().width),90);
-        
+   
     }
     void resetLine(){
         _line.clear();
@@ -673,7 +684,14 @@ public:
         }
         return _poem.size()>0;
     }
-    
+    string getDataString(){
+        string t="";
+        for(auto& s:_poem){
+            t+=s.getString();
+            t+="|";
+        }
+        return t;
+    }
 };
 
 

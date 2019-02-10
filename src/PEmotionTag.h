@@ -139,18 +139,18 @@ public:
             if(!_tag[i].finished()) return false;
         return true;
     }
-    string getData(){
-        
+    ofxJSONElement getData(){
         ofxJSONElement json_;
         
         float arr_[8];
         for(int i=0;i<MEMOTION_TAG;++i){
             json_["tag"].append(_tag[i].val()/100.0);
         }
-       
-        //json_["tag"].ap;
+        return json_;
+    }
+    string getDataString(){
         
-        return json_.getRawString();
+        return getData().getRawString();
     }
 };
 

@@ -13,17 +13,17 @@
 #define CAM_WIDTH 1920
 #define CAM_HEIGHT 1080
 
-#define DRAW_DEBUG_INFO
+//#define DRAW_DEBUG_INFO
 
 #define TIME_DETECT_COUNT 3
-#define TIME_POEM 5000
-#define TIME_RECAP 2000
-#define TIME_FINISH 8000
+#define TIME_POEM 18000
+#define TIME_RECAP 8000
+#define TIME_FINISH 12000
 
 #define TIME_HINT 3000
 
-#define CAMERA_OFFSETX 100.0
-#define CAMERA_OFFSETY 20.0
+#define CAMERA_OFFSETX 300
+#define CAMERA_OFFSETY 0.0
 
 
 using namespace ofxCv;
@@ -63,7 +63,8 @@ class ofApp : public ofBaseApp{
     
         void sendFaceRequest();
         void sendPoemRequest();
-        
+        void sendTrainingRequest();
+    
         ofxHttpUtils _http_utils;
 		void urlResponse(ofxHttpResponse & response);
 

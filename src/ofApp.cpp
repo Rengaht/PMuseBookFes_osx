@@ -19,8 +19,8 @@ ofxTrueTypeFontUL2 PPoemText::FontPoem2;
 void ofApp::setup(){
 	
 	ofSetVerticalSync(true);
-    
-    
+    ofHideCursor();
+    ofSetFullscreen(true);
     
 ////    if(ofIsGLProgrammableRenderer()){
 ////        _shader_glitch.load("shader/shadersGL3/shader");
@@ -194,6 +194,10 @@ void ofApp::keyReleased(int key){
         case 't':
             sendPoemRequest();
             break;
+        case 'f':
+        case 'F':
+            ofToggleFullscreen();
+            break;
 	}
 }
 
@@ -325,9 +329,14 @@ void ofApp::sendFaceRequest(){
     
     string url_="https://eastasia.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceAttributes=age,gender,emotion,smile&returnFaceLandmarks=true";	
 	// save image
-	ofSaveImage(_camera.getPixels(),"tmp.jpg");
-	ofBuffer data_=ofBufferFromFile("tmp.jpg",true);
+//    ofSaveImage(_camera.getPixels(),"tmp.jpg");
+    ofImage tmp_;
+    tmp_.setFromPixels(_camera.getPixels().getData(),_camera.getWidth(),_camera.getHeight(),OF_IMAGE_COLOR);
+    tmp_.mirror(false, true);
+    tmp_.save("raw/"+_user_id+".jpg");
+    ofBuffer data_=ofBufferFromFile("raw/"+_user_id+".jpg",true);
 
+    
 	//_http_utils.postDataWithAuthKey(url_,data_,"Ocp-Apim-Subscription-Key", "022b0021b7994b659b75a7d9022f6746","application/octet-stream");
     
     ofxHttpForm form_;
@@ -345,7 +354,7 @@ void ofApp::sendPoemRequest(){
 
     ofLog()<<">>>>>> Send Poem Requeset...";
     
-    string emotion_=_emotion_tag.getData();
+    string emotion_=_emotion_tag.getDataString();
     string url_="http://muse.mmlab.com.tw:5000/generate/mood";
 //    _http_utils.setTimeoutSeconds(20);
 //    _http_utils.addUrl(url_);
@@ -358,6 +367,28 @@ void ofApp::sendPoemRequest(){
     
     _http_utils.addForm(form_);
 }
+void ofApp::sendTrainingRequest(){
+    ofLog()<<">>>>>> Send Training Requeset...";
+    
+    ofxJSONElement e_;
+    e_["text"]=_poem.getDataString();
+    e_["tag"]=_emotion_tag.getData()["tag"];
+    string data_=e_.getRawString();
+    
+    string url_="http://muse.mmlab.com.tw:5000/train";
+    //    _http_utils.setTimeoutSeconds(20);
+    //    _http_utils.addUrl(url_);
+    ofxHttpForm form_;
+    form_.action=url_;
+    form_.method=OFX_HTTP_POST;
+    form_.name="Train Request "+ofToString(ofGetElapsedTimeMillis());
+    form_.contentType="application/json";
+    form_.data=data_;
+    
+    _http_utils.addForm(form_);
+}
+
+
 void ofApp::urlResponse(ofxHttpResponse & resp_){
 	
 	if(resp_.status != 200){
@@ -370,14 +401,15 @@ void ofApp::urlResponse(ofxHttpResponse & resp_){
         //parsePoem(resp_.responseBody);
         ofxJSONElement json_;
         json_.parse(resp_.responseBody);
-        setUseSample(json_["sample"].asBool());
-        
-        if(_poem.parse(json_["text"].asString())){
-            prepareStatus(PPOEM);
-            _user_data["poem"].append(resp_.responseBody.getText());
+        if(!json_.isNull()){
+            setUseSample(json_["sample"].asBool());
             
-        }else prepareStatus(PSLEEP);
-        
+            if(_poem.parse(json_["text"].asString())){
+                prepareStatus(PPOEM);
+                _user_data["text"].append(_poem.getDataString());
+                
+            }else prepareStatus(PSLEEP);
+        }
     }else if(resp_.url.find("microsoft.com")!=-1){
         //ofLog()<<"receive: "<<resp_.responseBody;
         parseFaceData(resp_.responseBody);
@@ -576,18 +608,20 @@ void ofApp::createUserID(){
 
 void ofApp::saveRawData(){
     
-    ofImage tmp_;
-    tmp_.setFromPixels(_camera.getPixels().getData(),_camera.getWidth(),_camera.getHeight(),OF_IMAGE_COLOR);
-    tmp_.mirror(false, true);
-    tmp_.save("raw/"+_user_id+".jpg");
+//    ofImage tmp_;
+//    tmp_.setFromPixels(_camera.getPixels().getData(),_camera.getWidth(),_camera.getHeight(),OF_IMAGE_COLOR);
+//    tmp_.mirror(false, true);
+//    tmp_.save("raw/"+_user_id+".jpg");
     
     // save poem & emotion tag
     _user_data["id"]=_user_id;
     _user_data["page"]=_user_page;
+    _user_data["tag"]=_emotion_tag.getData();
     
     _user_data.save("data/"+_user_id+".json",true);
 
-  
+    if(!_use_sample)
+        sendTrainingRequest();
 }
 
 int ofApp::getUserPage(){
