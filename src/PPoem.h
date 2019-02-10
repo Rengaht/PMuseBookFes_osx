@@ -34,7 +34,7 @@ class PPoemLine{
     FrameTimer _timer_flow;
 public:
     PPoemLine(int mline_, ofPoint src_[],ofPoint dest_[]){
-        _mline=ofClamp(mline_,2,20);
+        _mline=ofClamp(mline_,4,10);
         for(int i=0;i<4;++i){
             _pos_src[i]=src_[i];
             _pos_dest[i]=dest_[i];
@@ -67,9 +67,19 @@ public:
         for(float i=0;i<1;i+=dt){
             ofPoint pt1=lerpPoint(src[0],src[1],i);
             ofPoint pt2=lerpPoint(src[2],src[3],i);
-            //ofLog()<<pt1<<"-"<<pt2;
-            ofDrawLine(pt1,lerpPoint(pt1,pt2,dl));
-            //ofDrawRectangle(pt1.x,pt1.y,LINE_WIDTH,ofLerp(pt1.y,pt2.y,dl)-pt1.y);
+            
+            ofVec2f n_(pt2.y-pt1.y,-pt2.x+pt1.x);
+            n_.normalize();
+            n_.scale(LINE_WIDTH);
+            
+            ofBeginShape();
+                ofVertex(pt1);
+                ofVertex(pt1.x+n_.x,pt1.y+n_.y);
+                ofVertex(pt2.x+n_.x,pt2.y+n_.y);
+                ofVertex(pt2);
+            ofEndShape();
+            //ofDrawLine(pt1,lerpPoint(pt1,pt2,dl));
+            
         }
     
         ofPopStyle();
@@ -136,6 +146,7 @@ class PPoemText{
     list<string> _str;
     list<ofPoint> _pos_text;
     
+    bool _has_publisher;
 public:
     
     static ofSoundPlayer SoundGlitch[7];
@@ -148,6 +159,7 @@ public:
     static ofxTrueTypeFontUL2 FontPoem2;
     
     PPoemText(ofPoint pos_,string str_,float scale_=1,bool mline=true){
+        _has_publisher=false;
         reset(pos_,str_,scale_,mline);
         
         ofAddListener(_timer_in.finish_event,this,&PPoemText::onInFinish);
@@ -180,14 +192,15 @@ public:
         
         // parse string
         if(mline){
-           // auto text=ofSplitString(str_,"/");
-//            int mstr=ofUTF8Length(str_);
-            int per_line=6;//max((int)ceil((mstr/3)/3),3);
-//            for(int i=0;i<str_.size();i+=per_line*3){
-//                string t="";
-//                for(int j=i;j<min((int)mstr,i+9);++j) t+=str_[j];
-//                _str.push_back(t);
-//            }
+           
+            if(str_.indexOf('\\')!=std::string::npos){
+                auto t=ofSplitString(str_,"\\");
+                _str.push_back(t[0]);
+                str_=t[1];
+                _has_publisher=true;
+            }
+            
+            int per_line=6;
             int count=0;
             string t="";
             for(auto a:ofUTF8Iterator(str_)){
@@ -241,9 +254,11 @@ public:
                 ofSetColor(0,alpha_);
                 ofDrawRectangle(*itr);
                 
+                float scl_=(i==0 && _has_publisher)?_scale*.5:_scale;
+                
                 ofPushMatrix();
                 ofTranslate(TextPadding,TextPadding);
-                ofScale(_scale,_scale);
+                ofScale(scl_,scl_);
                 ofTranslate(itp->x,itp->y);
                 
                 ofSetColor(255,104,62,alpha_);
@@ -278,6 +293,8 @@ public:
     
     void setPos(ofVec2f src_,float sang_,ofVec2f dest_,float dang_){
         _pos_src=src_;
+        if(_pos_src.x<0) _pos_src.x=ofGetWidth()/2;
+        
         _pos_dest=dest_;
         
         _ang_src=sang_;
@@ -329,15 +346,19 @@ public:
         }else{
             float y=0;
             float w,h;
+            int i=0;
             for(auto& t:_str){
                 auto r=FontPoem2.getStringBoundingBox(t,0,0);
-                auto bound=ofRectangle(0,0,r.width*_scale+TextPadding*2,r.height*_scale+TextPadding*2);
+                float scl_=(i==0 && _has_publisher)?_scale*.5:_scale;
+                
+                auto bound=ofRectangle(0,0,r.width*scl_+TextPadding*2,r.height*scl_+TextPadding*2);
                 _rect.push_back(bound);
                 _pos_text.push_back(ofPoint(-r.x,-r.y));
                 
                 w=max(w,bound.width);
                 h+=bound.height;
                 y+=bound.height;
+                i++;
             }
 //            for(auto& r:_rect){
 //                r.setWidth(w);
@@ -481,6 +502,8 @@ public:
         src_y+=_poem[i].getRect().height;
         i++;
         
+        if(m<3) return;
+        
         if(m>5){
             _poem[i].setPos(ofPoint((i<index_max_?left_x:right_x-_poem[i].getRect().width),src_y),0,
                             ofPoint(_poem[1].getRect().height,y_),-90);
@@ -537,6 +560,8 @@ public:
         }
         _line.push_back(PPoemLine(res1_,src1_,dest1_));
         
+        
+        if(m<4) return;
         
         // L2: add bewteen p4, p5&p6
         ofRectangle b3(_poem[4]._pos_src.x,_poem[4]._pos_src.y,_poem[4].getRect().width,_poem[4].getRect().height);

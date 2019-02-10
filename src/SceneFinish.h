@@ -79,7 +79,7 @@ public:
             case 3:
                 _img_logo.draw(0,0);
                 break;
-		}	
+		}
 	}
      void init(){
         SceneBase::init();

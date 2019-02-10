@@ -63,9 +63,21 @@ void ofApp::setupCamera(){
 	_finder.setPreset(ObjectFinder::Fast);
     
     float scale_=max((float)ofGetWidth()/_camera.getWidth(),(float)ofGetHeight()/_camera.getHeight());
-    _camera_scale=ofPoint(scale_,scale_);
+    //_camera_scale=ofPoint(scale_,scale_);
+    
+    float bx=CAMERA_OFFSETX;
+    float dy=CAMERA_OFFSETY;
+    float bw=ofGetWidth()-bx*2;
+    float bh=bw/16.0*9.0;
+    float scl_=ofGetWidth()/bw;
+    
+    _rect_camera_roi=ofRectangle(bx,ofGetHeight()-bh-dy,bw,bh);
+    _rect_camera=ofRectangle(-bx*scl_,(bh+20-ofGetHeight())*scl_,ofGetWidth()*scl_,ofGetHeight()*scl_);
     
     _camera_paused=false;
+    
+    
+    
 }
 void ofApp::setCameraPause(bool set_){
     _camera_paused=set_;
@@ -495,9 +507,9 @@ void ofApp::drawShaderImage(){
     _shader_glitch.setUniform1f("blurAmnt", _shader_density);
     
     ofPushMatrix();
-    ofTranslate(_fbo_glitch.getWidth(),0);
-    ofScale(-_camera_scale.x,_camera_scale.y);
-        _camera.draw(0,0);
+    ofTranslate(_rect_camera.x+_rect_camera.width,_rect_camera.y);
+    ofScale(-1,1);
+        _camera.draw(0,0,_rect_camera.width,_rect_camera.height);
     ofPopMatrix();
     
     _shader_glitch.end();

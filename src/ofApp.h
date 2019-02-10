@@ -22,6 +22,9 @@
 
 #define TIME_HINT 3000
 
+#define CAMERA_OFFSETX 100.0
+#define CAMERA_OFFSETY 20.0
+
 
 using namespace ofxCv;
 using namespace cv;
@@ -90,13 +93,16 @@ class ofApp : public ofBaseApp{
         bool isSamplePoem();
         void setUseSample(bool set_);
     
+        ofRectangle _rect_camera_roi;
+        ofRectangle _rect_camera;
+    
     private:        
 		int _millis_now;
         
         int _rid_face,_rid_poem;
         void parseFaceData(string data_);
     
-        ofPoint _camera_scale;
+        //ofPoint _camera_scale;
         ofVideoGrabber _camera;
         ofxCv::ObjectFinder _finder;
     

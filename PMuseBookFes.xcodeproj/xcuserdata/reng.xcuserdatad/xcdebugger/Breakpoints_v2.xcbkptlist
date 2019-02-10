@@ -9,28 +9,12 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "src/SceneFinish.h"
-            timestampString = "571319792.063"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "70"
-            endingLineNumber = "70"
-            landmarkName = "drawLayer(int i)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "src/PPoem.h"
-            timestampString = "571416244.61703"
+            timestampString = "571456888.062868"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "200"
-            endingLineNumber = "200"
+            startingLineNumber = "213"
+            endingLineNumber = "213"
             landmarkName = "reset(ofPoint pos_,string str_,float scale,bool mline)"
             landmarkType = "7">
          </BreakpointContent>
@@ -42,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/PPoem.h"
-            timestampString = "571416244.617398"
+            timestampString = "571456888.063273"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "204"
-            endingLineNumber = "204"
+            startingLineNumber = "217"
+            endingLineNumber = "217"
             landmarkName = "reset(ofPoint pos_,string str_,float scale,bool mline)"
             landmarkType = "7">
          </BreakpointContent>
@@ -58,13 +42,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/PPoem.h"
-            timestampString = "571416244.617605"
+            timestampString = "571456888.0635149"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "359"
-            endingLineNumber = "359"
-            landmarkName = "resetBound()"
-            landmarkType = "7">
+            startingLineNumber = "380"
+            endingLineNumber = "380"
+            landmarkName = "PPoem"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -74,27 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/PPoem.h"
-            timestampString = "571416244.617807"
+            timestampString = "571456888.063737"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "368"
-            endingLineNumber = "368"
-            landmarkName = "resetBound()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "src/PPoem.h"
-            timestampString = "571416244.618003"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "79"
-            endingLineNumber = "79"
+            startingLineNumber = "389"
+            endingLineNumber = "389"
             landmarkName = "draw(float a_)"
             landmarkType = "7">
          </BreakpointContent>
@@ -106,12 +74,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/PPoem.h"
-            timestampString = "571416244.618199"
+            timestampString = "571456888.0639811"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "393"
-            endingLineNumber = "393"
-            landmarkName = "draw(float a_)"
+            startingLineNumber = "89"
+            endingLineNumber = "89"
+            landmarkName = "update(float dt_)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "src/PPoem.h"
+            timestampString = "571456888.064202"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "414"
+            endingLineNumber = "414"
+            landmarkName = "init()"
             landmarkType = "7">
             <Locations>
                <Location
@@ -154,12 +138,60 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/PPoem.h"
-            timestampString = "571416244.618389"
+            timestampString = "571456888.064414"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "302"
-            endingLineNumber = "302"
-            landmarkName = "setPos(ofVec2f src_,float sang_,ofVec2f dest_,float dang_)"
+            startingLineNumber = "319"
+            endingLineNumber = "319"
+            landmarkName = "getRect()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "src/ofApp.cpp"
+            timestampString = "571456174.955869"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "77"
+            endingLineNumber = "77"
+            landmarkName = "ofApp::setupCamera()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "src/ofApp.cpp"
+            timestampString = "571456174.9559309"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "512"
+            endingLineNumber = "512"
+            landmarkName = "ofApp::drawShaderImage()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "src/PPoem.h"
+            timestampString = "571456934.214128"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "80"
+            endingLineNumber = "80"
+            landmarkName = "draw(float a_)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
