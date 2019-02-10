@@ -348,6 +348,7 @@ public:
             float w,h;
             int i=0;
             for(auto& t:_str){
+                
                 auto r=FontPoem2.getStringBoundingBox(t,0,0);
                 float scl_=(i==0 && _has_publisher)?_scale*.5:_scale;
                 
@@ -561,7 +562,7 @@ public:
         _line.push_back(PPoemLine(res1_,src1_,dest1_));
         
         
-        if(m<5) return;
+        if(m<6) return;
         
         // L2: add bewteen p4, p5&p6
         ofRectangle b3(_poem[4]._pos_src.x,_poem[4]._pos_src.y,_poem[4].getRect().width,_poem[4].getRect().height);
@@ -662,6 +663,7 @@ public:
             auto text=ofSplitString(data_,"|");
             int m=text.size();
             for(int i=0;i<m;++i){
+                if(text[i].size()<1) continue;
                 //auto ws=utf82ws(s);
                 //s=ws2utf8(ws);
                 _poem.push_back(PPoemText(ofPoint(0,0),text[i],(i==0?1:0.7),i==0));
