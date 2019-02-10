@@ -29,7 +29,7 @@ public:
 //                ofPushStyle();
 //                ofSetColor(255,0,0);
 //                ofFill();
-//                    ofDrawBitmapString("2.Writing poem...",10,10);                                
+//                    ofDrawBitmapString("2.Writing poem...",10,10);
 //                ofPopStyle();
 				break;
             case 1:

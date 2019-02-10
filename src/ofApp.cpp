@@ -130,16 +130,16 @@ void ofApp::update(){
             break;
 	    case PDETECT:
             if(dd_>0 && dd_<1){
-                if(ofRandom(10)<1) _shader_density=dd_+ofRandom(-.2,.2);
+                if(ofRandom(10)<1) _shader_density=dd_+ofRandom(-.5,.5);
             }else if(dd_==1){
-                if(ofRandom(30)<1) _shader_density=dd_+ofRandom(-.1,.1);
+                if(ofRandom(30)<1) _shader_density=dd_+ofRandom(-.3,.3);
             }else _shader_density=dd_;
             break;
         case PFEEDBACK:
             if(dd_>0 && dd_<1){
-                if(ofRandom(10)<1) _shader_density=dd_+ofRandom(-.2,.2);
+                if(ofRandom(10)<1) _shader_density=dd_+ofRandom(-.5,.5);
             }else if(dd_==1){
-                if(_poem.goFinished() && ofRandom(30)<1) _shader_density=dd_+ofRandom(-.1,.1);
+                if(_poem.goFinished() && ofRandom(30)<1) _shader_density=dd_+ofRandom(-.3,.3);
             }else _shader_density=dd_;
             break;
         case PPOEM:
