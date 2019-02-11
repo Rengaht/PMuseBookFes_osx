@@ -20,7 +20,7 @@ void ofApp::setup(){
 	
 	ofSetVerticalSync(true);
     ofHideCursor();
-   // ofSetFullscreen(true);
+   //ofSetFullscreen(true);
     
 ////    if(ofIsGLProgrammableRenderer()){
 ////        _shader_glitch.load("shader/shadersGL3/shader");
@@ -74,7 +74,7 @@ void ofApp::setupCamera(){
     float scl_=ofGetWidth()/bw;
     
     _rect_camera_roi=ofRectangle(bx,ofGetHeight()-bh-dy,bw,bh);
-    _rect_camera=ofRectangle(-bx*scl_,(bh+20-ofGetHeight())*scl_,ofGetWidth()*scl_,ofGetHeight()*scl_);
+    _rect_camera=ofRectangle(-bx*scl_,(bh+dy-ofGetHeight())*scl_,ofGetWidth()*scl_,ofGetHeight()*scl_);
     
     _camera_paused=false;
     
@@ -131,23 +131,29 @@ void ofApp::update(){
 	    case PDETECT:
             if(dd_>0 && dd_<1){
                 if(ofRandom(10)<1) _shader_density=dd_+ofRandom(-.5,.5);
+                //else _shader_density=dd_+ofRandom(-.01,.01);
             }else if(dd_==1){
-                if(ofRandom(30)<1) _shader_density=dd_+ofRandom(-.3,.3);
+                if(ofRandom(20)<1) _shader_density=dd_+ofRandom(-.3,.3);
+                //else _shader_density=dd_+ofRandom(-.01,.01);
             }else _shader_density=dd_;
             break;
         case PFEEDBACK:
             if(dd_>0 && dd_<1){
                 if(ofRandom(10)<1) _shader_density=dd_+ofRandom(-.5,.5);
+                //else _shader_density=dd_+ofRandom(-.01,.01);
             }else if(dd_==1){
-                if(_poem.goFinished() && ofRandom(30)<1) _shader_density=dd_+ofRandom(-.3,.3);
+                if(_poem.goFinished()){
+                    if(ofRandom(20)<1) _shader_density=dd_+ofRandom(-.3,.3);
+                    //else _shader_density=dd_+ofRandom(-.01,.01);
+                }
             }else _shader_density=dd_;
             break;
         case PPOEM:
-            if(_emotion_tag.fadeInFinished()){
-                if(_poem._state!=PPoem::IN){
-                    _poem.reset();
-                    _poem.init();
-                }
+            if(!_use_sample && _emotion_tag.fadeInFinished()){
+                    if(_poem._state!=PPoem::IN){
+                        _poem.reset();
+                        _poem.init();
+                    }
             }
             if(ofRandom(30)<1) _shader_density=dd_+ofRandom(-.1,.1);
             break;
@@ -408,7 +414,9 @@ void ofApp::urlResponse(ofxHttpResponse & resp_){
         ofxJSONElement json_;
         json_.parse(resp_.responseBody);
         if(!json_.isNull()){
+            
             setUseSample(json_["sample"].asBool());
+            //setUseSample(true);
             
             if(_poem.parse(json_["text"].asString())){
                 prepareStatus(PPOEM);

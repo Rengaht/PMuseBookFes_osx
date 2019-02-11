@@ -25,8 +25,8 @@ public:
         
 		setup();
         
-        _timer_in[1].setDue(1000);
-        _timer_in[3]=FrameTimer(EASE_DUE,EASE_OFFSET*4);
+       // _timer_in[1].setDue(EASE_DUE*2);
+       // _timer_in[3]=FrameTimer(EASE_DUE,EASE_OFFSET*3);
         
         _timer_sound=FrameTimer(EASE_OFFSET);
         ofAddListener(_timer_sound.finish_event,this,&SceneFinish::onSceneInFinish);

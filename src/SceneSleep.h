@@ -5,7 +5,7 @@
 #include "SceneBase.h"
 #include "PMuseFlow.h"
 
-#define FACE_DETECT_FRAME 1
+#define FACE_DETECT_FRAME 4000
 
 class SceneSleep:public SceneBase{
 private:
@@ -15,7 +15,7 @@ private:
     
     FrameTimer _timer_text;
     int _index_text;
-    int _index_face_start;
+    float _index_face_start;
     
 public:
 	SceneSleep(ofApp* set_):SceneBase(set_){
@@ -62,12 +62,18 @@ public:
 		}
         
         if(_ptr_app->faceFound()){
-            if(_index_face_start<0) _index_face_start=_index_text;
-            else{
-                if(_index_text-_index_face_start>=FACE_DETECT_FRAME) _ptr_app->prepareStatus(ofApp::PDETECT);
+            if(_index_face_start<0){
+                _index_face_start=0;
+                ofLog()<<"---------- detect face ---------- ";
+            }else{
+                if(_index_face_start>=FACE_DETECT_FRAME) _ptr_app->prepareStatus(ofApp::PDETECT);
+                _index_face_start+=dt_;
             }
         }else{
-            //_index_face_start=-1;
+            if(_index_face_start>0)
+                ofLog()<<"----------  no face ---------- "<<_index_face_start;
+            _index_face_start=-1;
+            
         }
 	}
 	void init(){

@@ -9,11 +9,12 @@
 #define PPoem_h
 #define LINE_MARGIN 10
 #define LINE_WIDTH 5
-#define MAX_POEM_LENGTH 860
+#define MAX_POEM_LENGTH 800
 #define POEM_TRANS_TIME 500
 
 #define TIME_POEM_IN 2000
 #define TIME_POEM_OUT 800
+#define TIME_POEM_OFFSET 500
 
 //#include "ofxTrueTypeFontUC.h"
 #include "ofxTrueTypeFontUL2.h"
@@ -39,9 +40,9 @@ public:
             _pos_src[i]=src_[i];
             _pos_dest[i]=dest_[i];
         }
-        _timer_in=FrameTimer(TIME_POEM_IN,ofRandom(.1,.5)*TIME_POEM_IN);
-        _timer_out=FrameTimer(TIME_POEM_OUT,ofRandom(.1,.5)*TIME_POEM_OUT);
-        _timer_go=FrameTimer(POEM_TRANS_TIME,ofRandom(.1,.5)*POEM_TRANS_TIME);
+        _timer_in=FrameTimer(TIME_POEM_IN,ofRandom(1,3.5)*TIME_POEM_OFFSET);
+        _timer_out=FrameTimer(TIME_POEM_OUT,ofRandom(1,3.5)*TIME_POEM_OFFSET);
+        _timer_go=FrameTimer(POEM_TRANS_TIME,ofRandom(.1,.5)*TIME_POEM_OFFSET);
         
         _timer_flow=FrameTimer(ofRandom(300,800));
     }
@@ -65,7 +66,7 @@ public:
         float dt=1.0/(float)_mline;
         float lw=min(src[0].distance(src[1]),src[2].distance(src[3]))/(float)_mline*.33;
 
-        for(float i=0;i<1;i+=dt){
+        for(float i=0;i<=1;i+=dt){
             ofPoint pt1=lerpPoint(src[0],src[1],i);
             ofPoint pt2=lerpPoint(src[2],src[3],i);
             
@@ -161,9 +162,9 @@ public:
     static float TextPadding;
     static ofxTrueTypeFontUL2 FontPoem2;
     
-    PPoemText(ofPoint pos_,string str_,float scale_=1,bool mline=true){
+    PPoemText(ofPoint pos_,string str_,float scale_=1,bool mline=true,float index_=0){
         _has_publisher=false;
-        reset(pos_,str_,scale_,mline);
+        reset(pos_,str_,scale_,mline,index_);
         
         ofAddListener(_timer_in.finish_event,this,&PPoemText::onInFinish);
         ofAddListener(_timer_go.finish_event,this,&PPoemText::onInFinish);
@@ -181,7 +182,7 @@ public:
         for(auto & s:_str) t+=s;
         return t;
     }
-    void reset(ofPoint pos_,string str_,float scale,bool mline){
+    void reset(ofPoint pos_,string str_,float scale,bool mline,int index_){
         
         _pos_src=pos_;
         _pos_dest=pos_;
@@ -194,9 +195,10 @@ public:
         ofLog()<<str_;
         //_rect=FontPoem.getStringBoundingBox(_str,0,0);
         
-        _timer_in=FrameTimer(TIME_POEM_IN,ofRandom(.1,.5)*TIME_POEM_IN);
-        _timer_out=FrameTimer(TIME_POEM_OUT,ofRandom(.1,.5)*TIME_POEM_OUT);
-        _timer_go=FrameTimer(POEM_TRANS_TIME,ofRandom(.1,.5)*POEM_TRANS_TIME);
+        
+        _timer_in=FrameTimer(TIME_POEM_IN,(index_+ofRandom(-.2,.5))*TIME_POEM_OFFSET);
+        _timer_out=FrameTimer(TIME_POEM_OUT,(index_+ofRandom(-.5,.5))*TIME_POEM_OFFSET);
+        _timer_go=FrameTimer(POEM_TRANS_TIME,(ofRandom(.1,.5))*TIME_POEM_OFFSET);
         
         // parse string
         if(mline){
@@ -373,9 +375,9 @@ public:
                 y+=bound.height;
                 i++;
             }
-//            for(auto& r:_rect){
-//                r.setWidth(w);
-//            }
+           for(auto& r:_rect){
+                r.setWidth(w);
+            }
             _bound=ofRectangle(0,0,w,h);
         }
         return _bound;
@@ -685,7 +687,7 @@ public:
                 if(text[i].size()<1) continue;
                 //auto ws=utf82ws(s);
                 //s=ws2utf8(ws);
-                _poem.push_back(PPoemText(ofPoint(0,0),text[i],(i==0?1:0.7),i==0));
+                _poem.push_back(PPoemText(ofPoint(0,0),text[i],(i==0?1:0.7),i==0,i));
             }
             
             ofLog()<<"#line= "<<ofToString(_poem.size());

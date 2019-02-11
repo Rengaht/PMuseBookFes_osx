@@ -15,8 +15,8 @@ SceneBase::SceneBase(ofApp *set_ptr){
 
 void SceneBase::setup(){
 	for(int i=0;i<_mlayer;++i){
-		_timer_in.push_back(FrameTimer(EASE_DUE,EASE_OFFSET*i));
-		_timer_out.push_back(FrameTimer(EASE_DUE,EASE_OFFSET*i));
+		_timer_in.push_back(FrameTimer(EASE_DUE,EASE_OFFSET*(i+1)));
+		_timer_out.push_back(FrameTimer(EASE_DUE,EASE_OFFSET*(_mlayer-i)));
 	}
     _enable_button=new bool[_button.size()];
     for(int i=0;i<_button.size();++i){

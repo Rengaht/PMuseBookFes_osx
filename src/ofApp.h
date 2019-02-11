@@ -18,12 +18,12 @@
 #define TIME_DETECT_COUNT 3
 #define TIME_POEM 18000
 #define TIME_RECAP 8000
-#define TIME_FINISH 12000
+#define TIME_FINISH 8000
 
-#define TIME_HINT 3000
+#define TIME_HINT 3500
 
-#define CAMERA_OFFSETX 300
-#define CAMERA_OFFSETY 0.0
+#define CAMERA_OFFSETX 200
+#define CAMERA_OFFSETY 120.0
 
 
 using namespace ofxCv;

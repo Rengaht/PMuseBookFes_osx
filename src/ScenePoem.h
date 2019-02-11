@@ -19,6 +19,7 @@ public:
         
         _img_text.load("img/text-8.png");
         _timer_hint=FrameTimer(TIME_HINT);
+        ofAddListener(_timer_hint.finish_event,this,&ScenePoem::onHintFinish);
         
 		setup();
 	}
@@ -38,7 +39,7 @@ public:
                 
                 if(_ptr_app->isSamplePoem()){
                     ofPushStyle();
-                    ofSetColor(255,255*(_timer_hint.valEaseInOut()));
+                    ofSetColor(255,255*(1.0-_timer_hint.valEaseInOut()));
                         _img_text.draw(0,0);
                     ofPopStyle();
                 }
@@ -54,12 +55,22 @@ public:
         SceneBase::update(dt_);
         _timer_poem.update(dt_);
         _timer_hint.update(dt_);
+        
     }
     void onTimerFinish(int &e){
         if(_ptr_app->isSamplePoem()) _ptr_app->saveImage();
         else _ptr_app->prepareStatus(ofApp::PFEEDBACK);
     }
-
+    void onHintFinish(int &e){
+        if(_ptr_app->isSamplePoem()){
+            if(_ptr_app->_poem._state!=PPoem::IN){
+                _ptr_app->_poem.reset();
+                _ptr_app->_poem.init();
+            }else{
+                ofLog()<<_ptr_app->_poem._state;
+            }
+        }
+    }
 };
 
 

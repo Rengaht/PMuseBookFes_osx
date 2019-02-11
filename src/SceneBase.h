@@ -3,8 +3,8 @@
 #define SCENE_BASE_H
 
 #define SLEEP_TIME 30000
-#define EASE_DUE 500
-#define EASE_OFFSET 100
+#define EASE_DUE 1500
+#define EASE_OFFSET 300
 
 #include "ofMain.h"
 #include "FrameTimer.h"

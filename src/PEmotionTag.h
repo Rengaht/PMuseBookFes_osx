@@ -9,6 +9,8 @@
 #define PEmotionTag_h
 
 #define MEMOTION_TAG 8
+#define EMOTION_IN_TIME 2000
+#define EMOTION_IN_DELAY 500
 
 #include "ofMain.h"
 
@@ -52,8 +54,8 @@ public:
         
         _pos_num=-1;//FontEmotionTitle.getStringBoundingBox(title,0,0).width+64;
         
-        _timer_in=FrameTimer(500,ofRandom(200));
-        _timer_out=FrameTimer(300);
+        _timer_in=FrameTimer(EMOTION_IN_TIME,(float)EMOTION_IN_DELAY*ofRandom(.2,1.2));
+        _timer_out=FrameTimer(500);
         
     }
     void reset(){
@@ -104,7 +106,7 @@ public:
            _tag[j].reset(x,y,title_,number_);
             
             x=j<3?(ofRandom(30,150)):(ofGetWidth()/4.0*3.0+ofRandom(-50,100));
-            y=min(y+ofRandom(150,250),ofGetHeight()-100.0f);
+            y=min(y+ofRandom(150,350),ofGetHeight()-100.0f);
             if(j==3){
                 y=ofRandom(100,200);
             }
